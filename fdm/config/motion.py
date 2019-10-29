@@ -4,6 +4,7 @@ from machinekit import config as c
 
 
 def setup_motion(kinematics='trivkins'):
+    print ("file of config is ",c.__file__)
     rt.loadrt(kinematics)
     rt.loadrt('tp')
 
@@ -12,7 +13,8 @@ def setup_motion(kinematics='trivkins'):
               servo_period_nsec=c.find('EMCMOT', 'SERVO_PERIOD'),
               num_joints=c.find('TRAJ', 'AXES'),
               num_aio=51,
-              num_dio=21)
+              num_dio=21,
+              kins=kinematics)
 
 
 def setup_temperature_io(name):

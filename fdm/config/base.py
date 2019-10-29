@@ -6,6 +6,11 @@ import rcomps
 import storage
 import motion
 
+def assign_param(name,signal,val):
+    import subprocess
+    subprocess.call("halcmd setp %s.%s %s"%(name,signal,str(val)), shell=True )
+
+
 
 def usrcomp_status(compname, signame, thread, resetSignal='estop-reset'):
     sigIn = hal.newsig('%s-error-in' % signame, hal.HAL_BIT)
@@ -57,7 +62,7 @@ def usrcomp_watchdog(comps, enableSignal, thread,
 def setup_stepper(stepgenIndex, section, axisIndex=None,
                   stepgenType='hpg.stepgen', gantry=False,
                   gantryJoint=0, velocitySignal=None, thread=None):
-    stepgen = '%s.%02i' % (stepgenType, stepgenIndex)
+    stepgen = '%s.%01i' % (stepgenType, stepgenIndex)
     if axisIndex is not None:
         axis = 'axis.%i' % axisIndex
     hasMotionAxis = (axisIndex is not None) and (not gantry or gantryJoint == 0)
@@ -73,105 +78,21 @@ def setup_stepper(stepgenIndex, section, axisIndex=None,
     enable.link('%s.enable' % stepgen)
 
     # expose timing parameters so we can multiplex them later
-    sigBase = 'stepgen-%i' % stepgenIndex
-    dirsetup = hal.newsig('%s-dirsetup' % sigBase, hal.HAL_U32)
-    dirhold = hal.newsig('%s-dirhold' % sigBase, hal.HAL_U32)
-    steplen = hal.newsig('%s-steplen' % sigBase, hal.HAL_U32)
-    stepspace = hal.newsig('%s-stepspace' % sigBase, hal.HAL_U32)
-    scale = hal.newsig('%s-scale' % sigBase, hal.HAL_FLOAT)
-    maxVel = hal.newsig('%s-max-vel' % sigBase, hal.HAL_FLOAT)
-    maxAcc = hal.newsig('%s-max-acc' % sigBase, hal.HAL_FLOAT)
-    controlType = hal.newsig('%s-control-type' % sigBase, hal.HAL_BIT)
+    sigBase = 'stepgen.%i' % stepgenIndex
 
-    hal.Pin('%s.dirsetup' % stepgen).link(dirsetup)
-    hal.Pin('%s.dirhold' % stepgen).link(dirhold)
-    dirsetup.set(c.find(section, 'DIRSETUP'))
-    dirhold.set(c.find(section, 'DIRHOLD'))
-
-    hal.Pin('%s.steplen' % stepgen).link(steplen)
-    hal.Pin('%s.stepspace' % stepgen).link(stepspace)
-    steplen.set(c.find(section, 'STEPLEN'))
-    stepspace.set(c.find(section, 'STEPSPACE'))
-
-    hal.Pin('%s.position-scale' % stepgen).link(scale)
-    scale.set(c.find(section, 'SCALE'))
-
-    hal.Pin('%s.maxvel' % stepgen).link(maxVel)
-    hal.Pin('%s.maxaccel' % stepgen).link(maxAcc)
-    maxVel.set(c.find(section, 'STEPGEN_MAX_VEL'))
-    maxAcc.set(c.find(section, 'STEPGEN_MAX_ACC'))
-
-    hal.Pin('%s.control-type' % stepgen).link(controlType)
+    assign_param(sigBase,"position-scale",c.find("ABP", 'SCALE'))
+    assign_param(sigBase,"maxaccel",c.find("ABP", 'STEPGEN_MAXACC'))
+    assign_param(sigBase,"maxvel",c.find("ABP", 'STEPGEN_MAXVEL'))
 
     # position command and feedback
-    if not velocityControlled:
-        if hasMotionAxis:  # per axis fb and cmd
-            posCmd = hal.newsig('emcmot-%i-pos-cmd' % axisIndex, hal.HAL_FLOAT)
-            posCmd.link('%s.motor-pos-cmd' % axis)
-            if not gantry:
-                posCmd.link('%s.position-cmd' % stepgen)
-            else:
-                posCmd.link('gantry.%i.position-cmd' % axisIndex)
+    limitHome = hal.newsig('limit-%i-home' % axisIndex, hal.HAL_BIT)
+    limitMin = hal.newsig('limit-%i-min' % axisIndex, hal.HAL_BIT)
+    limitMax = hal.newsig('limit-%i-max' % axisIndex, hal.HAL_BIT)
+    limitHome.link('%s.home-sw-in' % axis)
+    limitMin.link('%s.neg-lim-sw-in' % axis)
+    limitMax.link('%s.pos-lim-sw-in' % axis)
 
-            posFb = hal.newsig('emcmot-%i-pos-fb' % axisIndex, hal.HAL_FLOAT)
-            posFb.link('%s.motor-pos-fb' % axis)
-            if not gantry:
-                posFb.link('%s.position-fb' % stepgen)
-            else:
-                posFb.link('gantry.%i.position-fb' % axisIndex)
-
-        if gantry:  # per joint fb and cmd
-            posCmd = hal.newsig('emcmot-%i-%i-pos-cmd' % (axisIndex, gantryJoint), hal.HAL_FLOAT)
-            posCmd.link('gantry.%i.joint.%02i.pos-cmd' % (axisIndex, gantryJoint))
-            posCmd.link('%s.position-cmd' % stepgen)
-
-            posFb = hal.newsig('emcmot-%i-%i-pos-fb' % (axisIndex, gantryJoint), hal.HAL_FLOAT)
-            posFb.link('%s.position-fb' % stepgen)
-            posFb.link('gantry.%i.joint.%02i.pos-fb' % (axisIndex, gantryJoint))
-    else:  # velocity control
-        hal.net(velocitySignal, '%s.velocity-cmd' % stepgen)
-        controlType.set(1)  # enable velocity control
-
-    # limits
-    if hasMotionAxis:
-        limitHome = hal.newsig('limit-%i-home' % axisIndex, hal.HAL_BIT)
-        limitMin = hal.newsig('limit-%i-min' % axisIndex, hal.HAL_BIT)
-        limitMax = hal.newsig('limit-%i-max' % axisIndex, hal.HAL_BIT)
-        limitHome.link('%s.home-sw-in' % axis)
-        limitMin.link('%s.neg-lim-sw-in' % axis)
-        limitMax.link('%s.pos-lim-sw-in' % axis)
-
-    if gantry:
-        if gantryJoint == 0:
-            axisHoming = hal.newsig('emcmot-%i-homing' % axisIndex, hal.HAL_BIT)
-            axisHoming.link('%s.homing' % axis)
-
-            hal.Pin('gantry.%i.search-vel' % axisIndex).set(c.find(section, 'HOME_SEARCH_VEL'))
-            hal.Pin('gantry.%i.homing' % axisIndex).link(axisHoming)
-            hal.Pin('gantry.%i.home' % axisIndex).link(limitHome)
-
-            or2 = rt.newinst('or2', 'or2.limit-%i-min' % axisIndex)
-            hal.addf(or2.name, thread)
-            or2.pin('out').link(limitMin)
-
-            or2 = rt.newinst('or2', 'or2.limit-%i-max' % axisIndex)
-            hal.addf(or2.name, thread)
-            or2.pin('out').link(limitMax)
-
-        limitHome = hal.newsig('limit-%i-%i-home' % (axisIndex, gantryJoint),
-                               hal.HAL_BIT)
-        limitMin = hal.newsig('limit-%i-%i-min' % (axisIndex, gantryJoint),
-                              hal.HAL_BIT)
-        limitMax = hal.newsig('limit-%i-%i-max' % (axisIndex, gantryJoint),
-                              hal.HAL_BIT)
-        homeOffset = hal.Signal('home-offset-%i-%i' % (axisIndex, gantryJoint),
-                                hal.HAL_FLOAT)
-        limitHome.link('gantry.%i.joint.%02i.home' % (axisIndex, gantryJoint))
-        limitMin.link('or2.limit-%i-min.in%i' % (axisIndex, gantryJoint))
-        limitMax.link('or2.limit-%i-max.in%i' % (axisIndex, gantryJoint))
-        homeOffset.link('gantry.%i.joint.%02i.home-offset' % (axisIndex, gantryJoint))
-
-        storage.setup_gantry_storage(axisIndex, gantryJoint)
+    # storage.setup_gantry_storage(axisIndex, gantryJoint)
 
     # stepper pins configured in hardware setup
 
@@ -250,33 +171,6 @@ def create_temperature_control(name, section, thread, hardwareOkSignal=None,
     noErrorIn = hal.newsig('%s-no-error-in' % name, hal.HAL_BIT)
     errorIn = hal.newsig('%s-error-in' % name, hal.HAL_BIT)
 
-    # reset set temperature when estop is cleared
-    reset = rt.newinst('reset', 'reset.%s-temp-set' % name)
-    hal.addf(reset.name, thread)
-    reset.pin('reset-float').set(0.0)
-    reset.pin('out-float').link(tempSet)
-    reset.pin('rising').set(True)
-    reset.pin('falling').set(False)
-    reset.pin('trigger').link('estop-reset')
-
-    tempPidBiasOut = tempPidBias
-    # coolingFan compensation
-    if coolingFan:
-        tempPidFanBias = hal.newsig('%s-temp-pid-fan-bias' % name, hal.HAL_FLOAT)
-        tempPidBiasOut = hal.newsig('%s-temp-pid-bias-out' % name, hal.HAL_FLOAT)
-
-        scale = rt.newinst('scale', 'scale.%s-temp-pid-fan-bias' % name)
-        hal.addf(scale.name, thread)
-        scale.pin('in').link('%s.pwm' % coolingFan)
-        scale.pin('out').link(tempPidFanBias)
-        scale.pin('gain').set(c.find(section, 'FAN_BIAS'))
-
-        sum2 = rt.newinst('sum2', 'sum2.%s-temp-pid-bias' % name)
-        hal.addf(sum2.name, thread)
-        sum2.pin('in0').link(tempPidBias)
-        sum2.pin('in1').link(tempPidFanBias)
-        sum2.pin('out').link(tempPidBiasOut)
-
     # PID
     pid = rt.newinst('pid', 'pid.%s' % name)
     hal.addf('%s.do-pid-calcs' % pid.name, thread)
@@ -291,106 +185,6 @@ def create_temperature_control(name, section, thread, hardwareOkSignal=None,
     pid.pin('Dgain').link(tempPidDgain)
     pid.pin('maxerrorI').link(tempPidMaxerrorI)
 
-    # Limit heater PWM to positive values
-    # PWM mimics hm2 implementation, which generates output for negative values
-    limit1 = rt.newinst('limit1', 'limit.%s-temp-heaterl' % name)
-    hal.addf(limit1.name, thread)
-    limit1.pin('in').link(tempPidOut)
-    limit1.pin('out').link(tempPwm)
-    limit1.pin('min').set(0.0)
-    limit1.pin('max').link(tempPwmMax)
-
-    # Temperature checking
-    sum2 = rt.newinst('sum2', 'sum2.%s-temp-range-pos' % name)
-    hal.addf(sum2.name, thread)
-    sum2.pin('in0').link(tempSet)
-    sum2.pin('in1').set(c.find(section, 'TEMP_RANGE_POS_ERROR'))
-    sum2.pin('out').link(tempRangeMax)
-
-    sum2 = rt.newinst('sum2', 'sum2.%s-temp-range-neg' % name)
-    hal.addf(sum2.name, thread)
-    sum2.pin('in0').link(tempSet)
-    sum2.pin('in1').set(c.find(section, 'TEMP_RANGE_NEG_ERROR'))
-    sum2.pin('out').link(tempRangeMin)
-
-    #the output of this component will say if measured temperature is in range of set value
-    wcomp = rt.newinst('wcomp', 'wcomp.%s-temp-in-range' % name)
-    hal.addf(wcomp.name, thread)
-    wcomp.pin('min').link(tempRangeMin)
-    wcomp.pin('max').link(tempRangeMax)
-    wcomp.pin('in').link(tempMeas)
-    wcomp.pin('out').link(tempInRange)
-
-    # limit the output temperature to prevent damage when thermistor is broken/removed
-    wcomp = rt.newinst('wcomp', 'wcomp.%s-temp-in-limit' % name)
-    hal.addf(wcomp.name, thread)
-    wcomp.pin('min').link(tempLimitMin)
-    wcomp.pin('max').link(tempLimitMax)
-    wcomp.pin('in').link(tempMeas)
-    wcomp.pin('out').link(tempInLimit)
-
-    # check the thermistor
-    # net e0.temp.meas              => thermistor-check.e0.temp
-    # net e0.temp.in-range          => not.e0-temp-range.in
-    # net e0.temp.in-range_n        <= not.e0-temp-range.out
-    # net e0.temp.in-range_n        => thermistor-check.e0.enable
-    # net e0.heaterl                => thermistor-check.e0.pid
-    # net e0.therm-ok               <= thermistor-check.e0.no-error
-
-    # no error chain
-    and3 = rt.newinst('andn', 'and3.%s-no-error-in' % name, pincount=3)
-    hal.addf(and3.name, thread)
-    and3.pin('in0').link(tempThermOk)
-    and3.pin('in1').link(tempInLimit)
-    if hardwareOkSignal:
-        and3.pin('in2').link(hardwareOkSignal)
-    else:
-        and3.pin('in2').set(True)
-    and3.pin('out').link(noErrorIn)
-
-    tempThermOk.set(True)  # thermistor checking for now disabled
-
-    notComp = rt.newinst('not', 'not.%s-error-in' % name)
-    hal.addf(notComp.name, thread)
-    notComp.pin('in').link(noErrorIn)
-    notComp.pin('out').link(errorIn)
-
-    safetyLatch = rt.newinst('safety_latch', 'safety-latch.%s-error' % name)
-    hal.addf(safetyLatch.name, thread)
-    safetyLatch.pin('error-in').link(errorIn)
-    safetyLatch.pin('error-out').link(error)
-    safetyLatch.pin('reset').link('estop-reset')
-    safetyLatch.pin('threshold').set(500)  # 500ms error
-    safetyLatch.pin('latching').set(True)
-
-    # active chain
-    comp = rt.newinst('comp', 'comp.%s-active' % name)
-    hal.addf(comp.name, thread)
-    comp.pin('in0').set(0.0001)
-    comp.pin('hyst').set(0.0)
-    comp.pin('in1').link(tempPwm)
-    comp.pin('out').link(active)
-
-    # Thermistor checking
-    # setp thermistor-check.e0.wait 9.0
-    # setp thermistor-check.e0.min-pid 1.5 # disable0.25
-    # setp thermistor-check.e0.min-temp 1.5
-    # net e0.pid.bias => thermistor-check.e0.bias
-
-    # Hotend fan
-    if hotendFan:
-        comp = rt.newinst('comp', 'comp.%s-pwm-enable' % hotendFan)
-        hal.addf(comp.name, thread)
-        comp.pin('in0').set(c.find(section, 'HOTEND_FAN_THRESHOLD', 50.0))
-        comp.pin('in1').link(tempMeas)
-        comp.pin('hyst').set(c.find(section, 'HOTEND_FAN_HYST', 2.0))
-        comp.pin('out').link('%s-pwm-enable' % hotendFan)
-
-        hal.Signal('%s-pwm' % hotendFan).set(1.0)
-
-    rcomps.create_temperature_rcomp(name)
-    motion.setup_temperature_io(name)
-
     # init parameter signals
     tempLimitMin.set(c.find(section, 'TEMP_LIMIT_MIN'))
     tempLimitMax.set(c.find(section, 'TEMP_LIMIT_MAX'))
@@ -401,61 +195,6 @@ def create_temperature_control(name, section, thread, hardwareOkSignal=None,
     tempPidDgain.set(c.find(section, 'PID_DGAIN'))
     tempPidMaxerrorI.set(c.find(section, 'PID_MAXERRORI'))
     tempPidBias.set(c.find(section, 'PID_BIAS'))
-
-
-def setup_extruder_multiplexer(extruders, thread):
-    extruderSel = hal.Signal('extruder-sel', hal.HAL_S32)
-
-    select = rt.newinst('selectn', 'select%i.extruder-sel' % extruders,
-                        pincount=extruders)
-    hal.addf(select.name, thread)
-    for n in range(0, extruders):
-        select.pin('out%i' % n).link('e%i-enable' % n)
-    select.pin('sel').link(extruderSel)
-
-    extruderSel.link('iocontrol.0.tool-prep-number')  # driven by T code
-
-
-def setup_light(name, thread):
-    for color in ('r', 'g', 'b', 'w'):
-        inSig = hal.newsig('%s-%s' % (name, color), hal.HAL_FLOAT)
-        outSig = hal.newsig('%s-%s-out' % (name, color), hal.HAL_FLOAT)
-
-        ledDim = rt.newinst('led_dim', 'led-dim.%s-%s' % (name, color))
-        hal.addf(ledDim.name, thread)
-        ledDim.pin('in').link(inSig)
-        ledDim.pin('out').link(outSig)
-
-    rcomps.create_light_rcomp(name)
-    storage.setup_light_storage(name)
-    motion.setup_light_io(name)
-
-
-def setup_fan(name, thread):
-    setSig = hal.newsig('%s-set' % name, hal.HAL_FLOAT)
-    pwmSig = hal.newsig('%s-pwm' % name, hal.HAL_FLOAT)
-    enable = hal.newsig('%s-enable' % name, hal.HAL_BIT)
-
-    # reset fan when estop is cleared
-    reset = rt.newinst('reset', 'reset.%s-set' % name)
-    hal.addf(reset.name, thread)
-    reset.pin('reset-float').set(0.0)
-    reset.pin('out-float').link(setSig)
-    reset.pin('rising').set(True)
-    reset.pin('falling').set(False)
-    reset.pin('trigger').link('estop-reset')
-
-    scale = rt.newinst('scale', 'scale.%s' % name)
-    hal.addf(scale.name, thread)
-    scale.pin('in').link(setSig)
-    scale.pin('out').link(pwmSig)
-    scale.pin('gain').set(1.0 / 255.0)  # 255 steps from motion
-
-    setSig.set(0.0)
-    enable.set(True)
-
-    rcomps.create_fan_rcomp(name)
-    motion.setup_fan_io(name)
 
 
 def setup_estop(errorSignals, thread):
@@ -487,29 +226,10 @@ def setup_estop(errorSignals, thread):
     estopIn.link('iocontrol.0.emc-enable-in')
 
 
-def setup_tool_loopback():
-    # create signals for tool loading loopback
-    hal.net('iocontrol.0.tool-prepare', 'iocontrol.0.tool-prepared')
-    hal.net('iocontrol.0.tool-change', 'iocontrol.0.tool-changed')
-
-
 def setup_estop_loopback():
     # create signal for estop loopback
     hal.net('iocontrol.0.user-enable-out', 'iocontrol.0.emc-enable-in')
 
-
-def init_gantry(axisIndex, joints=2, latching=True):
-    if latching:
-        comp = 'lgantry'
-    else:
-        comp = 'gantry'
-    rt.newinst(comp, 'gantry.%i' % axisIndex, pincount=joints)
-    rcomps.create_gantry_rcomp(axisIndex=axisIndex)
-
-
-def gantry_read(gantryAxis, thread):
-    hal.addf('gantry.%i.read' % gantryAxis, thread)
-
-
-def gantry_write(gantryAxis, thread):
-    hal.addf('gantry.%i.write' % gantryAxis, thread)
+def setup_tool_loopback():
+    hal.net('iocontrol.0.tool-prepare', 'iocontrol.0.tool-prepared')
+    hal.net('iocontrol.0.tool-change', 'iocontrol.0.tool-changed')

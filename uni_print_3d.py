@@ -10,79 +10,71 @@ from fdm.config import base
 from fdm.config import storage
 from fdm.config import motion
 import hardware
+#import hal_tclab
+
 
 # initialize the RTAPI command client
 rt.init_RTAPI()
 # loads the ini file passed by linuxcnc
 c.load_ini(os.environ['INI_FILE_NAME'])
 
-motion.setup_motion()
+#for name, value in c.items("AXIS"):
+#    print("AXIS %s is %s"%(name,value))
+#    for i in range(c.find("TRAJ","AXES")):
+#        sec="AXIS_%s"%i
+#        if not c.has_section(sec):
+#            c.add_section(sec)
+#        c.set(sec,name,value)
+#c.save_changes()
+        # hal.Pin('ini.%s.%s'%(i,"max_velocity")).set(value)
+
+motion.setup_motion("lineardeltakins")
 hardware.init_hardware()
 storage.init_storage('storage.ini')
 
 # Gantry component for Z Axis
-base.init_gantry(axisIndex=2)
+#base.init_gantry(axisIndex=2)
 
 # reading functions
 hardware.hardware_read()
-base.gantry_read(gantryAxis=2, thread='servo-thread')
+#base.gantry_read(gantryAxis=2, thread='servo-thread')
 hal.addf('motion-command-handler', 'servo-thread')
 
-numFans = c.find('FDM', 'NUM_FANS')
-numExtruders = c.find('FDM', 'NUM_EXTRUDERS')
-numLights = c.find('FDM', 'NUM_LIGHTS')
-withAbp = c.find('FDM', 'ABP', False)
+numFans = 0 #c.find('FDM', 'NUM_FANS')
+numExtruders = 1 # c.find('FDM', 'NUM_EXTRUDERS')
+numLights = 0 #c.find('FDM', 'NUM_LIGHTS')
+withAbp = 1 #c.find('FDM', 'ABP', False)
 
 # Axis-of-motion Specific Configs (not the GUI)
-ve.velocity_extrusion(extruders=numExtruders, thread='servo-thread')
+# ve.velocity_extrusion(extruders=numExtruders, thread='servo-thread')
 # X [0] Axis
-base.setup_stepper(section='AXIS_0', axisIndex=0, stepgenIndex=0)
+base.setup_stepper(section='AXIS_0', axisIndex=0, stepgenIndex=0, stepgenType="stepgen")
 # Y [1] Axis
-base.setup_stepper(section='AXIS_1', axisIndex=1, stepgenIndex=1)
+base.setup_stepper(section='AXIS_1', axisIndex=1, stepgenIndex=1, stepgenType="stepgen")
 # Z [2] Axis
-base.setup_stepper(section='AXIS_2', axisIndex=2, stepgenIndex=2,
-              thread='servo-thread', gantry=True, gantryJoint=0)
-base.setup_stepper(section='AXIS_2', axisIndex=2, stepgenIndex=3,
-            gantry=True, gantryJoint=1)
+base.setup_stepper(section='AXIS_2', axisIndex=2, stepgenIndex=2, stepgenType="stepgen")
+#              thread='servo-thread', gantry=True, gantryJoint=0)
+#base.setup_stepper(section='AXIS_2', axisIndex=2, stepgenIndex=3,
+#            gantry=True, gantryJoint=1)
 # Extruder, velocity controlled
-base.setup_stepper(section='EXTRUDER_0', stepgenIndex=4, velocitySignal='ve-extrude-vel')
 
-# Extruder Multiplexer
-base.setup_extruder_multiplexer(extruders=(numExtruders + int(withAbp)), thread='servo-thread')
-# Stepper Multiplexer
-multiplexSections = []
-for i in range(0, numExtruders):
-    multiplexSections.append('EXTRUDER_%i' % i)
-if withAbp:  # not a very good solution
-    multiplexSections.append('ABP')
-    multiplexSections.append('ABP')  # no this is no mistake, we need an additional section
-    hal.Pin('motion.digital-out-io-20').link('stepgen-4-control-type')
-    hal.net('stepgen-4-pos-cmd', 'motion.analog-out-io-50', 'hpg.stepgen.04.position-cmd')
-    hal.net('stepgen-4-pos-fb', 'motion.analog-in-50', 'hpg.stepgen.04.position-fb')
-base.setup_stepper_multiplexer(stepgenIndex=4, sections=multiplexSections,
-                               selSignal='extruder-sel', thread='servo-thread')
+base.setup_stepper(section='AXIS_3', axisIndex=3, stepgenIndex=3, stepgenType="stepgen")
 
-# Fans
-for i in range(0, numFans):
-    base.setup_fan('f%i' % i, thread='servo-thread')
-for i in range(0, numExtruders):
-    hardware.setup_exp('exp%i' % i)
+#base.setup_stepper(section='EXTRUDER_0', axisIndex=3, stepgenIndex=3, velocitySignal='ve-extrude-vel', stepgenType="stepgen")
+
+hal.loadusr("hal_tclab",name="hal_tclab",wait_name="hal_tclab")
 
 # Temperature Signals
 base.create_temperature_control(name='hbp', section='HBP',
-                                hardwareOkSignal='temp-hw-ok',
                                 thread='servo-thread')
-for i in range(0, numExtruders):
-    base.create_temperature_control(name='e%i' % i, section='EXTRUDER_%i' % i,
-                                    coolingFan='f%i' % i, hotendFan='exp%i' % i,
-                                    hardwareOkSignal='temp-hw-ok',
-                                    thread='servo-thread')
+base.create_temperature_control(name='e0', section='EXTRUDER_0',
+                                thread='servo-thread')
 
 # LEDs
-for i in range(0, numLights):
-    base.setup_light('l%i' % i, thread='servo-thread')
+#for i in range(0, numLights):
+#    base.setup_light('l%i' % i, thread='servo-thread')
 # HB LED
-hardware.setup_hbp_led(thread='servo-thread')
+# hardware.setup_hbp_led(thread='servo-thread')
 
 # Standard I/O - EStop, Enables, Limit Switches, Etc
 errorSignals = ['gpio-hw-error', 'pwm-hw-error', 'temp-hw-error',
@@ -94,12 +86,12 @@ base.setup_tool_loopback()
 # Probe
 base.setup_probe(thread='servo-thread')
 # Setup Hardware
-hardware.setup_hardware(thread='servo-thread')
+# hardware.setup_hardware(thread='servo-thread')
 
 # write out functions
 hal.addf('motion-controller', 'servo-thread')
-base.gantry_write(gantryAxis=2, thread='servo-thread')
-hardware.hardware_write()
+# base.gantry_write(gantryAxis=2, thread='servo-thread')
+#hardware.hardware_write()
 
 # Storage
 storage.read_storage()
