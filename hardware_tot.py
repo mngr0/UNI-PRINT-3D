@@ -6,15 +6,14 @@ from fdm.config import base
 
 
 def hardware_read():
-    pass
-    #hal.addf('hpg.capture-position', 'servo-thread')
-    #hal.addf('bb_gpio.read', 'servo-thread')
+    hal.addf('stepgen.capture-position', 'servo-thread')
+    hal.addf('motion-command-handler', 'servo-thread')
 
 
 def hardware_write():
-    pass
-    #hal.addf('hpg.update', 'servo-thread')
-    #hal.addf('bb_gpio.write', 'servo-thread')
+    hal.addf('motion-controller', 'servo-thread')
+    hal.addf('addf stepgen.update-freq', 'servo-thread')
+    hal.addf('debounce.funct', 'servo-thread')
 
 
 def init_hardware():
@@ -23,72 +22,19 @@ def init_hardware():
     # load low-level drivers
     rt.loadrt('hal_parport', cfg='0x0378')
     rt.loadrt('stepgen', step_type='0,0,0,0')
-    deb = rt.newinst('debounce', 'debounce.%s' % "ciao")
-    # rt.loadrt('debounce')
+    deb = rt.newinst('debounce', 'debounce')
+
 
 
 def setup_hardware(thread):
     # Stepper
-    hal.Pin('hpg.stepgen.00.steppin').set(812)  # XStep
-    hal.Pin('hpg.stepgen.00.dirpin').set(811)   # XDir
-    hal.Pin('hpg.stepgen.01.steppin').set(816)  # YStep
-    hal.Pin('hpg.stepgen.01.dirpin').set(815)   # YDir
-    hal.Pin('hpg.stepgen.02.steppin').set(922)  # AStep - ZL
-    hal.Pin('hpg.stepgen.02.dirpin').set(921)   # ADir
-    hal.Pin('hpg.stepgen.03.steppin').set(913)  # ZStep - ZR
-    hal.Pin('hpg.stepgen.03.dirpin').set(925)   # ZDir
-    hal.Pin('hpg.stepgen.04.steppin').set(911)  # BStep
-    hal.Pin('hpg.stepgen.04.dirpin').set(942)   # BDir
-
+    posSignal = hal.newsig('%spos-cmd' % "X", hal.HAL_FLOAT)
+    stepSignal = hal.newsig('%sstep' % "X", hal.HAL_FLOAT)
+    dirSignal = hal.newsig('%sdir' % "X", hal.HAL_FLOAT)
+    hal.Pin('stepgen.%s.position-cmd' % str(0)).link(posSignal)
+    hal.Pin('axis.%s.motor-pos-cmd' % str(0)).link(posSignal)
+    hal.Pin('parport.0.pin-03-out')
     # link emcmot.xx.enable to stepper driver enable signals
-
-addf stepgen.capture-position servo-thread
-addf motion-command-handler servo-thread
-addf motion-controller servo-thread
-addf stepgen.update-freq servo-thread
-addf debounce.0.funct servo-thread
-
-# connect position commands from motion module to step generator
-net Xpos-cmd axis.0.motor-pos-cmd => stepgen.0.position-cmd
-net Ypos-cmd axis.1.motor-pos-cmd => stepgen.1.position-cmd
-net Zpos-cmd axis.2.motor-pos-cmd => stepgen.2.position-cmd
-net Apos-cmd axis.3.motor-pos-cmd => stepgen.3.position-cmd
-
-# connect position feedback from step generators
-# to motion module
-net Xpos-fb stepgen.0.position-fb => axis.0.motor-pos-fb
-net Ypos-fb stepgen.1.position-fb => axis.1.motor-pos-fb
-net Zpos-fb stepgen.2.position-fb => axis.2.motor-pos-fb
-net Apos-fb stepgen.3.position-fb => axis.3.motor-pos-fb
-
-# connect enable signals for step generators
-net Xen axis.0.amp-enable-out => stepgen.0.enable
-net Yen axis.1.amp-enable-out => stepgen.1.enable
-net Zen axis.2.amp-enable-out => stepgen.2.enable
-net Aen axis.3.amp-enable-out => stepgen.3.enable
-
-# connect signals to step pulse generator outputs
-net Xstep <= stepgen.0.step
-net Xdir  <= stepgen.0.dir
-net Ystep <= stepgen.1.step
-net Ydir  <= stepgen.1.dir
-net Zstep <= stepgen.2.step
-net Zdir  <= stepgen.2.dir
-net Astep <= stepgen.3.step
-net Adir  <= stepgen.3.dir
-
-# set stepgen module scaling - get values from ini file
-setp stepgen.0.position-scale [AXIS_0]SCALE
-setp stepgen.1.position-scale [AXIS_1]SCALE
-setp stepgen.2.position-scale [AXIS_2]SCALE
-setp stepgen.3.position-scale [AXIS_3]SCALE
-
-# set stepgen module accel limits - get values from ini file
-setp stepgen.0.maxaccel [AXIS_0]STEPGEN_MAXACCEL
-setp stepgen.1.maxaccel [AXIS_1]STEPGEN_MAXACCEL
-setp stepgen.2.maxaccel [AXIS_2]STEPGEN_MAXACCEL
-setp stepgen.3.maxaccel [AXIS_3]STEPGEN_MAXACCEL
-
 
 
 

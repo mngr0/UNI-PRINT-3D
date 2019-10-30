@@ -1,0 +1,949 @@
+HAL Components:
+    ID  Type Flags Inst Name                                      PID   State
+   984  User          0 axisui                                    6071  ready, u1:0 u2:0
+   738  RT   cd       1 debounce                                  RT    ready, u1:0 u2:0
+   881  RT   cd       1 estop_latch                               RT    ready, u1:0 u2:0
+    66  rHAL   i      0 hal_lib                                   0     ready, u1:0 u2:0
+    78  uHAL   i      0 hal_lib5999                               5999  ready, u1:0 u2:0
+   770  uHAL   i      0 hal_lib6013                               6013  ready, u1:0 u2:0
+   911  uHAL   i      0 hal_lib6070                               6070  ready, u1:0 u2:0
+   982  uHAL   i      0 hal_lib6071                               6071  ready, u1:0 u2:0
+  1000  uHAL   i      0 hal_lib6077                               6077  ready, u1:0 u2:0
+   593  RT            0 hal_parport                               RT    ready, u1:0 u2:0
+  1002  User          0 halcmd6077                                6077  ready, u1:0 u2:0
+   913  User          0 inihal                                    6070  ready, u1:0 u2:0
+    80  User          0 iocontrol                                 5999  ready, u1:0 u2:0
+   106  RT            0 lineardeltakins                           RT    ready, u1:0 u2:0
+   121  RT            0 motmod                                    RT    ready, u1:0 u2:0
+   861  RT   cd       1 orn                                       RT    ready, u1:0 u2:0
+   664  RT            0 stepgen                                   RT    ready, u1:0 u2:0
+   772  User          0 storage                                   6013  ready, u1:0 u2:0
+   118  RT            0 tp                                        RT    ready, u1:0 u2:0
+
+Instances:
+ Inst  Comp  Size  Name                                              Owner
+  740   738   416  debounce                                 debounce            
+  883   881    64  estop-latch                              estop_latch         
+  863   861   160  or6.estop-error                          orn                 
+
+Component Pins:
+  Comp   Inst Type  Dir         Value  Name                                            Epsilon Flags  linked to:
+   121        bit   OUT          TRUE  axis.0.active                           		--l-
+   121        bit   OUT         FALSE  axis.0.amp-enable-out                   		--l-	      ==> emcmot-0-enable
+   121        bit   IN          FALSE  axis.0.amp-fault-in                     		--l-
+   121        float OUT             0  axis.0.backlash-corr                    	0.000010	--l-
+   121        float OUT             0  axis.0.backlash-filt                    	0.000010	--l-
+   121        float OUT             0  axis.0.backlash-vel                     	0.000010	--l-
+   121        float OUT             0  axis.0.coarse-pos-cmd                   	0.000010	--l-
+   121        bit   OUT         FALSE  axis.0.error                            		--l-
+   121        float OUT             0  axis.0.f-error                          	0.000010	--l-
+   121        float OUT           0.1  axis.0.f-error-lim                      	0.000010	--l-
+   121        bit   OUT         FALSE  axis.0.f-errored                        		--l-
+   121        bit   OUT         FALSE  axis.0.faulted                          		--l-
+   121        float OUT             0  axis.0.free-pos-cmd                     	0.000010	--l-
+   121        bit   OUT         FALSE  axis.0.free-tp-enable                   		--l-
+   121        float OUT             0  axis.0.free-vel-lim                     	0.000010	--l-
+   121        float IN              0  axis.0.home                             	0.000010	--l-
+   121        float IN            105  axis.0.home-offset                      	0.000010	--l-
+   121        s32   OUT             0  axis.0.home-state                       		--l-
+   121        bit   IN          FALSE  axis.0.home-sw-in                       		--l-	      <== limit-0-home
+   121        bit   OUT         FALSE  axis.0.homed                            		--l-
+   121        bit   OUT         FALSE  axis.0.homing                           		--l-
+   121        bit   OUT          TRUE  axis.0.in-position                      		--l-
+   121        bit   I/O         FALSE  axis.0.index-enable                     		--l-
+   121        s32   IN              0  axis.0.jog-counts                       		--l-
+   121        bit   IN          FALSE  axis.0.jog-enable                       		--l-
+   121        float IN              0  axis.0.jog-scale                        	0.000010	--l-
+   121        bit   IN          FALSE  axis.0.jog-vel-mode                     		--l-
+   121        float OUT             0  axis.0.joint-pos-cmd                    	0.000010	--l-
+   121        float OUT             0  axis.0.joint-pos-fb                     	0.000010	--l-
+   121        float OUT             0  axis.0.joint-vel-cmd                    	0.000010	--l-
+   121        bit   OUT         FALSE  axis.0.kb-jog-active                    		--l-
+   121        float OUT             0  axis.0.motor-offset                     	0.000010	--l-
+   121        float OUT             0  axis.0.motor-pos-cmd                    	0.000010	--l-	      ==> Xpos-cmd
+   121        float IN              0  axis.0.motor-pos-fb                     	0.000010	--l-
+   121        bit   OUT         FALSE  axis.0.neg-hard-limit                   		--l-
+   121        bit   IN          FALSE  axis.0.neg-lim-sw-in                    		--l-	      <== limit-0-min
+   121        bit   OUT         FALSE  axis.0.pos-hard-limit                   		--l-
+   121        bit   IN          FALSE  axis.0.pos-lim-sw-in                    		--l-	      <== limit-0-max
+   121        bit   OUT         FALSE  axis.0.wheel-jog-active                 		--l-
+   121        bit   OUT          TRUE  axis.1.active                           		--l-
+   121        bit   OUT         FALSE  axis.1.amp-enable-out                   		--l-	      ==> emcmot-1-enable
+   121        bit   IN          FALSE  axis.1.amp-fault-in                     		--l-
+   121        float OUT             0  axis.1.backlash-corr                    	0.000010	--l-
+   121        float OUT             0  axis.1.backlash-filt                    	0.000010	--l-
+   121        float OUT             0  axis.1.backlash-vel                     	0.000010	--l-
+   121        float OUT             0  axis.1.coarse-pos-cmd                   	0.000010	--l-
+   121        bit   OUT         FALSE  axis.1.error                            		--l-
+   121        float OUT             0  axis.1.f-error                          	0.000010	--l-
+   121        float OUT           0.1  axis.1.f-error-lim                      	0.000010	--l-
+   121        bit   OUT         FALSE  axis.1.f-errored                        		--l-
+   121        bit   OUT         FALSE  axis.1.faulted                          		--l-
+   121        float OUT             0  axis.1.free-pos-cmd                     	0.000010	--l-
+   121        bit   OUT         FALSE  axis.1.free-tp-enable                   		--l-
+   121        float OUT             0  axis.1.free-vel-lim                     	0.000010	--l-
+   121        float IN           15.5  axis.1.home                             	0.000010	--l-
+   121        float IN            150  axis.1.home-offset                      	0.000010	--l-
+   121        s32   OUT             0  axis.1.home-state                       		--l-
+   121        bit   IN          FALSE  axis.1.home-sw-in                       		--l-	      <== limit-1-home
+   121        bit   OUT         FALSE  axis.1.homed                            		--l-
+   121        bit   OUT         FALSE  axis.1.homing                           		--l-
+   121        bit   OUT          TRUE  axis.1.in-position                      		--l-
+   121        bit   I/O         FALSE  axis.1.index-enable                     		--l-
+   121        s32   IN              0  axis.1.jog-counts                       		--l-
+   121        bit   IN          FALSE  axis.1.jog-enable                       		--l-
+   121        float IN              0  axis.1.jog-scale                        	0.000010	--l-
+   121        bit   IN          FALSE  axis.1.jog-vel-mode                     		--l-
+   121        float OUT             0  axis.1.joint-pos-cmd                    	0.000010	--l-
+   121        float OUT             0  axis.1.joint-pos-fb                     	0.000010	--l-
+   121        float OUT             0  axis.1.joint-vel-cmd                    	0.000010	--l-
+   121        bit   OUT         FALSE  axis.1.kb-jog-active                    		--l-
+   121        float OUT             0  axis.1.motor-offset                     	0.000010	--l-
+   121        float OUT             0  axis.1.motor-pos-cmd                    	0.000010	--l-	      ==> Ypos-cmd
+   121        float IN              0  axis.1.motor-pos-fb                     	0.000010	--l-
+   121        bit   OUT         FALSE  axis.1.neg-hard-limit                   		--l-
+   121        bit   IN          FALSE  axis.1.neg-lim-sw-in                    		--l-	      <== limit-1-min
+   121        bit   OUT         FALSE  axis.1.pos-hard-limit                   		--l-
+   121        bit   IN          FALSE  axis.1.pos-lim-sw-in                    		--l-	      <== limit-1-max
+   121        bit   OUT         FALSE  axis.1.wheel-jog-active                 		--l-
+   121        bit   OUT          TRUE  axis.2.active                           		--l-
+   121        bit   OUT         FALSE  axis.2.amp-enable-out                   		--l-	      ==> emcmot-2-enable
+   121        bit   IN          FALSE  axis.2.amp-fault-in                     		--l-
+   121        float OUT             0  axis.2.backlash-corr                    	0.000010	--l-
+   121        float OUT             0  axis.2.backlash-filt                    	0.000010	--l-
+   121        float OUT             0  axis.2.backlash-vel                     	0.000010	--l-
+   121        float OUT             0  axis.2.coarse-pos-cmd                   	0.000010	--l-
+   121        bit   OUT         FALSE  axis.2.error                            		--l-
+   121        float OUT             0  axis.2.f-error                          	0.000010	--l-
+   121        float OUT           0.1  axis.2.f-error-lim                      	0.000010	--l-
+   121        bit   OUT         FALSE  axis.2.f-errored                        		--l-
+   121        bit   OUT         FALSE  axis.2.faulted                          		--l-
+   121        float OUT             0  axis.2.free-pos-cmd                     	0.000010	--l-
+   121        bit   OUT         FALSE  axis.2.free-tp-enable                   		--l-
+   121        float OUT             0  axis.2.free-vel-lim                     	0.000010	--l-
+   121        float IN              0  axis.2.home                             	0.000010	--l-
+   121        float IN              0  axis.2.home-offset                      	0.000010	--l-
+   121        s32   OUT             0  axis.2.home-state                       		--l-
+   121        bit   IN          FALSE  axis.2.home-sw-in                       		--l-	      <== limit-2-home
+   121        bit   OUT         FALSE  axis.2.homed                            		--l-
+   121        bit   OUT         FALSE  axis.2.homing                           		--l-
+   121        bit   OUT          TRUE  axis.2.in-position                      		--l-
+   121        bit   I/O         FALSE  axis.2.index-enable                     		--l-
+   121        s32   IN              0  axis.2.jog-counts                       		--l-
+   121        bit   IN          FALSE  axis.2.jog-enable                       		--l-
+   121        float IN              0  axis.2.jog-scale                        	0.000010	--l-
+   121        bit   IN          FALSE  axis.2.jog-vel-mode                     		--l-
+   121        float OUT             0  axis.2.joint-pos-cmd                    	0.000010	--l-
+   121        float OUT             0  axis.2.joint-pos-fb                     	0.000010	--l-
+   121        float OUT             0  axis.2.joint-vel-cmd                    	0.000010	--l-
+   121        bit   OUT         FALSE  axis.2.kb-jog-active                    		--l-
+   121        float OUT             0  axis.2.motor-offset                     	0.000010	--l-
+   121        float OUT             0  axis.2.motor-pos-cmd                    	0.000010	--l-	      ==> Zpos-cmd
+   121        float IN              0  axis.2.motor-pos-fb                     	0.000010	--l-
+   121        bit   OUT         FALSE  axis.2.neg-hard-limit                   		--l-
+   121        bit   IN          FALSE  axis.2.neg-lim-sw-in                    		--l-	      <== limit-2-min
+   121        bit   OUT         FALSE  axis.2.pos-hard-limit                   		--l-
+   121        bit   IN          FALSE  axis.2.pos-lim-sw-in                    		--l-	      <== limit-2-max
+   121        bit   OUT         FALSE  axis.2.wheel-jog-active                 		--l-
+   121        bit   OUT          TRUE  axis.3.active                           		--l-
+   121        bit   OUT         FALSE  axis.3.amp-enable-out                   		--l-	      ==> emcmot-3-enable
+   121        bit   IN          FALSE  axis.3.amp-fault-in                     		--l-
+   121        float OUT             0  axis.3.backlash-corr                    	0.000010	--l-
+   121        float OUT             0  axis.3.backlash-filt                    	0.000010	--l-
+   121        float OUT             0  axis.3.backlash-vel                     	0.000010	--l-
+   121        float OUT             0  axis.3.coarse-pos-cmd                   	0.000010	--l-
+   121        bit   OUT         FALSE  axis.3.error                            		--l-
+   121        float OUT             0  axis.3.f-error                          	0.000010	--l-
+   121        float OUT          0.01  axis.3.f-error-lim                      	0.000010	--l-
+   121        bit   OUT         FALSE  axis.3.f-errored                        		--l-
+   121        bit   OUT         FALSE  axis.3.faulted                          		--l-
+   121        float OUT             0  axis.3.free-pos-cmd                     	0.000010	--l-
+   121        bit   OUT         FALSE  axis.3.free-tp-enable                   		--l-
+   121        float OUT             0  axis.3.free-vel-lim                     	0.000010	--l-
+   121        float IN              0  axis.3.home                             	0.000010	--l-
+   121        float IN              0  axis.3.home-offset                      	0.000010	--l-
+   121        s32   OUT             0  axis.3.home-state                       		--l-
+   121        bit   IN          FALSE  axis.3.home-sw-in                       		--l-	      <== limit-3-home
+   121        bit   OUT         FALSE  axis.3.homed                            		--l-
+   121        bit   OUT         FALSE  axis.3.homing                           		--l-
+   121        bit   OUT          TRUE  axis.3.in-position                      		--l-
+   121        bit   I/O         FALSE  axis.3.index-enable                     		--l-
+   121        bit   IN          FALSE  axis.3.is-unlocked                      		--l-
+   121        s32   IN              0  axis.3.jog-counts                       		--l-
+   121        bit   IN          FALSE  axis.3.jog-enable                       		--l-
+   121        float IN              0  axis.3.jog-scale                        	0.000010	--l-
+   121        bit   IN          FALSE  axis.3.jog-vel-mode                     		--l-
+   121        float OUT             0  axis.3.joint-pos-cmd                    	0.000010	--l-
+   121        float OUT             0  axis.3.joint-pos-fb                     	0.000010	--l-
+   121        float OUT             0  axis.3.joint-vel-cmd                    	0.000010	--l-
+   121        bit   OUT         FALSE  axis.3.kb-jog-active                    		--l-
+   121        float OUT             0  axis.3.motor-offset                     	0.000010	--l-
+   121        float OUT             0  axis.3.motor-pos-cmd                    	0.000010	--l-
+   121        float IN              0  axis.3.motor-pos-fb                     	0.000010	--l-
+   121        bit   OUT         FALSE  axis.3.neg-hard-limit                   		--l-
+   121        bit   IN          FALSE  axis.3.neg-lim-sw-in                    		--l-	      <== limit-3-min
+   121        bit   OUT         FALSE  axis.3.pos-hard-limit                   		--l-
+   121        bit   IN          FALSE  axis.3.pos-lim-sw-in                    		--l-	      <== limit-3-max
+   121        bit   OUT         FALSE  axis.3.unlock                           		--l-
+   121        bit   OUT         FALSE  axis.3.wheel-jog-active                 		--l-
+   984        bit   OUT         FALSE  axisui.jog.a                            		--l-
+   984        bit   OUT         FALSE  axisui.jog.b                            		--l-
+   984        bit   OUT         FALSE  axisui.jog.c                            		--l-
+   984        float OUT             0  axisui.jog.increment                    	0.000010	--l-
+   984        bit   OUT         FALSE  axisui.jog.u                            		--l-
+   984        bit   OUT         FALSE  axisui.jog.v                            		--l-
+   984        bit   OUT         FALSE  axisui.jog.w                            		--l-
+   984        bit   OUT          TRUE  axisui.jog.x                            		--l-
+   984        bit   OUT         FALSE  axisui.jog.y                            		--l-
+   984        bit   OUT         FALSE  axisui.jog.z                            		--l-
+   984        bit   IN          FALSE  axisui.notifications-clear              		--l-
+   984        bit   IN          FALSE  axisui.notifications-clear-error        		--l-
+   984        bit   IN          FALSE  axisui.notifications-clear-info         		--l-
+   984        bit   IN          FALSE  axisui.run-disable                      		--l-
+   738    740 bit   IN          FALSE  debounce.0.in                           		--l-
+   738    740 bit   OUT         FALSE  debounce.0.out                          		--l-
+   738    740 s32   I/O             0  debounce.0.state                        		--l-
+   738    740 bit   IN          FALSE  debounce.1.in                           		--l-
+   738    740 bit   OUT         FALSE  debounce.1.out                          		--l-
+   738    740 s32   I/O             0  debounce.1.state                        		--l-
+   738    740 bit   IN          FALSE  debounce.2.in                           		--l-
+   738    740 bit   OUT         FALSE  debounce.2.out                          		--l-
+   738    740 s32   I/O             0  debounce.2.state                        		--l-
+   738    740 bit   IN          FALSE  debounce.3.in                           		--l-
+   738    740 bit   OUT         FALSE  debounce.3.out                          		--l-
+   738    740 s32   I/O             0  debounce.3.state                        		--l-
+   738    740 bit   IN          FALSE  debounce.4.in                           		--l-
+   738    740 bit   OUT         FALSE  debounce.4.out                          		--l-
+   738    740 s32   I/O             0  debounce.4.state                        		--l-
+   738    740 bit   IN          FALSE  debounce.5.in                           		--l-
+   738    740 bit   OUT         FALSE  debounce.5.out                          		--l-
+   738    740 s32   I/O             0  debounce.5.state                        		--l-
+   738    740 bit   IN          FALSE  debounce.6.in                           		--l-
+   738    740 bit   OUT         FALSE  debounce.6.out                          		--l-
+   738    740 s32   I/O             0  debounce.6.state                        		--l-
+   738    740 bit   IN          FALSE  debounce.7.in                           		--l-
+   738    740 bit   OUT         FALSE  debounce.7.out                          		--l-
+   738    740 s32   I/O             0  debounce.7.state                        		--l-
+   738    740 s32   I/O             5  debounce.delay                          		--l-
+   738    740 s32   OUT          1968  debounce.funct.time                     		----
+   738    740 s32   I/O          7512  debounce.funct.tmax                     		----
+   738    740 bit   OUT         FALSE  debounce.funct.tmax-inc                 		----
+   881    883 bit   IN          FALSE  estop-latch.fault-in                    		--l-	      <== estop-error
+   881    883 bit   OUT         FALSE  estop-latch.fault-out                   		--l-
+   881    883 s32   OUT          1152  estop-latch.funct.time                  		----
+   881    883 s32   I/O          6636  estop-latch.funct.tmax                  		----
+   881    883 bit   OUT         FALSE  estop-latch.funct.tmax-inc              		----
+   881    883 bit   IN           TRUE  estop-latch.ok-in                       		--l-	      <== estop-user
+   881    883 bit   OUT          TRUE  estop-latch.ok-out                      		--l-	      ==> estop-out
+   881    883 bit   IN          FALSE  estop-latch.reset                       		--l-	      <== estop-reset
+   881    883 bit   OUT          TRUE  estop-latch.watchdog                    		--l-
+   913        float IN              0  ini.0.backlash                          	0.000010	--l-
+   913        float IN              1  ini.0.ferror                            	0.000010	--l-
+   913        float IN           6000  ini.0.max_acceleration                  	0.000010	--l-
+   913        float IN            105  ini.0.max_limit                         	0.000010	--l-
+   913        float IN            300  ini.0.max_velocity                      	0.000010	--l-
+   913        float IN            0.1  ini.0.min_ferror                        	0.000010	--l-
+   913        float IN           -105  ini.0.min_limit                         	0.000010	--l-
+   913        float IN              0  ini.1.backlash                          	0.000010	--l-
+   913        float IN              1  ini.1.ferror                            	0.000010	--l-
+   913        float IN           5000  ini.1.max_acceleration                  	0.000010	--l-
+   913        float IN            150  ini.1.max_limit                         	0.000010	--l-
+   913        float IN            300  ini.1.max_velocity                      	0.000010	--l-
+   913        float IN            0.1  ini.1.min_ferror                        	0.000010	--l-
+   913        float IN           -150  ini.1.min_limit                         	0.000010	--l-
+   913        float IN              0  ini.2.backlash                          	0.000010	--l-
+   913        float IN              1  ini.2.ferror                            	0.000010	--l-
+   913        float IN           1600  ini.2.max_acceleration                  	0.000010	--l-
+   913        float IN            240  ini.2.max_limit                         	0.000010	--l-
+   913        float IN             20  ini.2.max_velocity                      	0.000010	--l-
+   913        float IN            0.1  ini.2.min_ferror                        	0.000010	--l-
+   913        float IN            -22  ini.2.min_limit                         	0.000010	--l-
+   913        float IN              0  ini.3.backlash                          	0.000010	--l-
+   913        float IN           0.05  ini.3.ferror                            	0.000010	--l-
+   913        float IN           1000  ini.3.max_acceleration                  	0.000010	--l-
+   913        float IN          1e+09  ini.3.max_limit                         	0.000010	--l-
+   913        float IN             50  ini.3.max_velocity                      	0.000010	--l-
+   913        float IN           0.01  ini.3.min_ferror                        	0.000010	--l-
+   913        float IN         -1e+08  ini.3.min_limit                         	0.000010	--l-
+   913        float IN              0  ini.4.backlash                          	0.000010	--l-
+   913        float IN              0  ini.4.ferror                            	0.000010	--l-
+   913        float IN              0  ini.4.max_acceleration                  	0.000010	--l-
+   913        float IN              0  ini.4.max_limit                         	0.000010	--l-
+   913        float IN              0  ini.4.max_velocity                      	0.000010	--l-
+   913        float IN              0  ini.4.min_ferror                        	0.000010	--l-
+   913        float IN              0  ini.4.min_limit                         	0.000010	--l-
+   913        float IN              0  ini.5.backlash                          	0.000010	--l-
+   913        float IN              0  ini.5.ferror                            	0.000010	--l-
+   913        float IN              0  ini.5.max_acceleration                  	0.000010	--l-
+   913        float IN              0  ini.5.max_limit                         	0.000010	--l-
+   913        float IN              0  ini.5.max_velocity                      	0.000010	--l-
+   913        float IN              0  ini.5.min_ferror                        	0.000010	--l-
+   913        float IN              0  ini.5.min_limit                         	0.000010	--l-
+   913        float IN              0  ini.6.backlash                          	0.000010	--l-
+   913        float IN              0  ini.6.ferror                            	0.000010	--l-
+   913        float IN              0  ini.6.max_acceleration                  	0.000010	--l-
+   913        float IN              0  ini.6.max_limit                         	0.000010	--l-
+   913        float IN              0  ini.6.max_velocity                      	0.000010	--l-
+   913        float IN              0  ini.6.min_ferror                        	0.000010	--l-
+   913        float IN              0  ini.6.min_limit                         	0.000010	--l-
+   913        float IN              0  ini.7.backlash                          	0.000010	--l-
+   913        float IN              0  ini.7.ferror                            	0.000010	--l-
+   913        float IN              0  ini.7.max_acceleration                  	0.000010	--l-
+   913        float IN              0  ini.7.max_limit                         	0.000010	--l-
+   913        float IN              0  ini.7.max_velocity                      	0.000010	--l-
+   913        float IN              0  ini.7.min_ferror                        	0.000010	--l-
+   913        float IN              0  ini.7.min_limit                         	0.000010	--l-
+   913        float IN              0  ini.8.backlash                          	0.000010	--l-
+   913        float IN              0  ini.8.ferror                            	0.000010	--l-
+   913        float IN              0  ini.8.max_acceleration                  	0.000010	--l-
+   913        float IN              0  ini.8.max_limit                         	0.000010	--l-
+   913        float IN              0  ini.8.max_velocity                      	0.000010	--l-
+   913        float IN              0  ini.8.min_ferror                        	0.000010	--l-
+   913        float IN              0  ini.8.min_limit                         	0.000010	--l-
+   913        float IN          1e+99  ini.traj_default_acceleration           	0.000010	--l-
+   913        float IN             20  ini.traj_default_velocity               	0.000010	--l-
+   913        float IN          1e+99  ini.traj_max_acceleration               	0.000010	--l-
+   913        float IN            450  ini.traj_max_velocity                   	0.000010	--l-
+    80        bit   OUT         FALSE  iocontrol.0.coolant-flood               		--l-
+    80        bit   OUT         FALSE  iocontrol.0.coolant-mist                		--l-
+    80        s32   IN              0  iocontrol.0.currenttool                 		--l-
+    80        bit   IN          FALSE  iocontrol.0.emc-enable-in               		--l-	      <== estop-in
+    80        bit   IN          FALSE  iocontrol.0.initialised                 		--l-
+    80        bit   OUT         FALSE  iocontrol.0.lube                        		--l-
+    80        bit   IN          FALSE  iocontrol.0.lube_level                  		--l-
+    80        s32   IN              6  iocontrol.0.numtools                    		--l-
+    80        bit   OUT         FALSE  iocontrol.0.tool-change                 		--l-	      ==> iocontrol-0-tool-change
+    80        bit   IN          FALSE  iocontrol.0.tool-changed                		--l-	      <== iocontrol-0-tool-change
+    80        s32   OUT             0  iocontrol.0.tool-number                 		--l-
+    80        s32   OUT             0  iocontrol.0.tool-prep-index             		--l-
+    80        s32   OUT             0  iocontrol.0.tool-prep-number            		--l-
+    80        s32   OUT             0  iocontrol.0.tool-prep-pocket            		--l-
+    80        bit   OUT         FALSE  iocontrol.0.tool-prepare                		--l-	      ==> iocontrol-0-tool-prepare
+    80        bit   IN          FALSE  iocontrol.0.tool-prepared               		--l-	      <== iocontrol-0-tool-prepare
+    80        bit   IN          FALSE  iocontrol.0.update                      		--l-
+    80        bit   OUT          TRUE  iocontrol.0.user-enable-out             		--l-	      ==> estop-user
+    80        bit   OUT         FALSE  iocontrol.0.user-request-enable         		--l-	      ==> estop-reset
+   106        float IN              0  lineardeltakins.A1off                   	0.000010	--l-
+   106        float IN              0  lineardeltakins.A2off                   	0.000010	--l-
+   106        float IN              0  lineardeltakins.J0off                   	0.000010	--l-
+   106        float IN              0  lineardeltakins.J1off                   	0.000010	--l-
+   106        float IN              0  lineardeltakins.J2off                   	0.000010	--l-
+   106        float IN            269  lineardeltakins.L                       	0.000010	--l-
+   106        float IN         130.25  lineardeltakins.R                       	0.000010	--l-
+   106        float IN              0  lineardeltakins.R1off                   	0.000010	--l-
+   106        float IN              0  lineardeltakins.R2off                   	0.000010	--l-
+   121        s32   OUT          1584  motion-command-handler.time             		----
+   121        s32   I/O         22944  motion-command-handler.tmax             		----
+   121        bit   OUT         FALSE  motion-command-handler.tmax-inc         		----
+   121        s32   OUT         21960  motion-controller.time                  		----
+   121        s32   I/O         64464  motion-controller.tmax                  		----
+   121        bit   OUT         FALSE  motion-controller.tmax-inc              		----
+   121        float IN              1  motion.adaptive-feed                    	0.000010	--l-
+   121        float IN              0  motion.analog-in-00                     	0.000010	--l-
+   121        float IN              0  motion.analog-in-01                     	0.000010	--l-
+   121        float IN              0  motion.analog-in-02                     	0.000010	--l-
+   121        float IN              0  motion.analog-in-03                     	0.000010	--l-
+   121        float IN              0  motion.analog-in-04                     	0.000010	--l-
+   121        float IN              0  motion.analog-in-05                     	0.000010	--l-
+   121        float IN              0  motion.analog-in-06                     	0.000010	--l-
+   121        float IN              0  motion.analog-in-07                     	0.000010	--l-
+   121        float IN              0  motion.analog-in-08                     	0.000010	--l-
+   121        float IN              0  motion.analog-in-09                     	0.000010	--l-
+   121        float IN              0  motion.analog-in-10                     	0.000010	--l-
+   121        float IN              0  motion.analog-in-11                     	0.000010	--l-
+   121        float IN              0  motion.analog-in-12                     	0.000010	--l-
+   121        float IN              0  motion.analog-in-13                     	0.000010	--l-
+   121        float IN              0  motion.analog-in-14                     	0.000010	--l-
+   121        float IN              0  motion.analog-in-15                     	0.000010	--l-
+   121        float IN              0  motion.analog-in-16                     	0.000010	--l-
+   121        float IN              0  motion.analog-in-17                     	0.000010	--l-
+   121        float IN              0  motion.analog-in-18                     	0.000010	--l-
+   121        float IN              0  motion.analog-in-19                     	0.000010	--l-
+   121        float IN              0  motion.analog-in-20                     	0.000010	--l-
+   121        float IN              0  motion.analog-in-21                     	0.000010	--l-
+   121        float IN              0  motion.analog-in-22                     	0.000010	--l-
+   121        float IN              0  motion.analog-in-23                     	0.000010	--l-
+   121        float IN              0  motion.analog-in-24                     	0.000010	--l-
+   121        float IN              0  motion.analog-in-25                     	0.000010	--l-
+   121        float IN              0  motion.analog-in-26                     	0.000010	--l-
+   121        float IN              0  motion.analog-in-27                     	0.000010	--l-
+   121        float IN              0  motion.analog-in-28                     	0.000010	--l-
+   121        float IN              0  motion.analog-in-29                     	0.000010	--l-
+   121        float IN              0  motion.analog-in-30                     	0.000010	--l-
+   121        float IN              0  motion.analog-in-31                     	0.000010	--l-
+   121        float IN              0  motion.analog-in-32                     	0.000010	--l-
+   121        float IN              0  motion.analog-in-33                     	0.000010	--l-
+   121        float IN              0  motion.analog-in-34                     	0.000010	--l-
+   121        float IN              0  motion.analog-in-35                     	0.000010	--l-
+   121        float IN              0  motion.analog-in-36                     	0.000010	--l-
+   121        float IN              0  motion.analog-in-37                     	0.000010	--l-
+   121        float IN              0  motion.analog-in-38                     	0.000010	--l-
+   121        float IN              0  motion.analog-in-39                     	0.000010	--l-
+   121        float IN              0  motion.analog-in-40                     	0.000010	--l-
+   121        float IN              0  motion.analog-in-41                     	0.000010	--l-
+   121        float IN              0  motion.analog-in-42                     	0.000010	--l-
+   121        float IN              0  motion.analog-in-43                     	0.000010	--l-
+   121        float IN              0  motion.analog-in-44                     	0.000010	--l-
+   121        float IN              0  motion.analog-in-45                     	0.000010	--l-
+   121        float IN              0  motion.analog-in-46                     	0.000010	--l-
+   121        float IN              0  motion.analog-in-47                     	0.000010	--l-
+   121        float IN              0  motion.analog-in-48                     	0.000010	--l-
+   121        float IN              0  motion.analog-in-49                     	0.000010	--l-
+   121        float IN              0  motion.analog-in-50                     	0.000010	--l-
+   121        float OUT             0  motion.analog-out-00                    	0.000010	--l-
+   121        float OUT             0  motion.analog-out-01                    	0.000010	--l-
+   121        float OUT             0  motion.analog-out-02                    	0.000010	--l-
+   121        float OUT             0  motion.analog-out-03                    	0.000010	--l-
+   121        float OUT             0  motion.analog-out-04                    	0.000010	--l-
+   121        float OUT             0  motion.analog-out-05                    	0.000010	--l-
+   121        float OUT             0  motion.analog-out-06                    	0.000010	--l-
+   121        float OUT             0  motion.analog-out-07                    	0.000010	--l-
+   121        float OUT             0  motion.analog-out-08                    	0.000010	--l-
+   121        float OUT             0  motion.analog-out-09                    	0.000010	--l-
+   121        float OUT             0  motion.analog-out-10                    	0.000010	--l-
+   121        float OUT             0  motion.analog-out-11                    	0.000010	--l-
+   121        float OUT             0  motion.analog-out-12                    	0.000010	--l-
+   121        float OUT             0  motion.analog-out-13                    	0.000010	--l-
+   121        float OUT             0  motion.analog-out-14                    	0.000010	--l-
+   121        float OUT             0  motion.analog-out-15                    	0.000010	--l-
+   121        float OUT             0  motion.analog-out-16                    	0.000010	--l-
+   121        float OUT             0  motion.analog-out-17                    	0.000010	--l-
+   121        float OUT             0  motion.analog-out-18                    	0.000010	--l-
+   121        float OUT             0  motion.analog-out-19                    	0.000010	--l-
+   121        float OUT             0  motion.analog-out-20                    	0.000010	--l-
+   121        float OUT             0  motion.analog-out-21                    	0.000010	--l-
+   121        float OUT             0  motion.analog-out-22                    	0.000010	--l-
+   121        float OUT             0  motion.analog-out-23                    	0.000010	--l-
+   121        float OUT             0  motion.analog-out-24                    	0.000010	--l-
+   121        float OUT             0  motion.analog-out-25                    	0.000010	--l-
+   121        float OUT             0  motion.analog-out-26                    	0.000010	--l-
+   121        float OUT             0  motion.analog-out-27                    	0.000010	--l-
+   121        float OUT             0  motion.analog-out-28                    	0.000010	--l-
+   121        float OUT             0  motion.analog-out-29                    	0.000010	--l-
+   121        float OUT             0  motion.analog-out-30                    	0.000010	--l-
+   121        float OUT             0  motion.analog-out-31                    	0.000010	--l-
+   121        float OUT             0  motion.analog-out-32                    	0.000010	--l-
+   121        float OUT             0  motion.analog-out-33                    	0.000010	--l-
+   121        float OUT             0  motion.analog-out-34                    	0.000010	--l-
+   121        float OUT             0  motion.analog-out-35                    	0.000010	--l-
+   121        float OUT             0  motion.analog-out-36                    	0.000010	--l-
+   121        float OUT             0  motion.analog-out-37                    	0.000010	--l-
+   121        float OUT             0  motion.analog-out-38                    	0.000010	--l-
+   121        float OUT             0  motion.analog-out-39                    	0.000010	--l-
+   121        float OUT             0  motion.analog-out-40                    	0.000010	--l-
+   121        float OUT             0  motion.analog-out-41                    	0.000010	--l-
+   121        float OUT             0  motion.analog-out-42                    	0.000010	--l-
+   121        float OUT             0  motion.analog-out-43                    	0.000010	--l-
+   121        float OUT             0  motion.analog-out-44                    	0.000010	--l-
+   121        float OUT             0  motion.analog-out-45                    	0.000010	--l-
+   121        float OUT             0  motion.analog-out-46                    	0.000010	--l-
+   121        float OUT             0  motion.analog-out-47                    	0.000010	--l-
+   121        float OUT             0  motion.analog-out-48                    	0.000010	--l-
+   121        float OUT             0  motion.analog-out-49                    	0.000010	--l-
+   121        float OUT             0  motion.analog-out-50                    	0.000010	--l-
+   121        float I/O             0  motion.analog-out-io-00                 	0.000010	--l-
+   121        float I/O             0  motion.analog-out-io-01                 	0.000010	--l-
+   121        float I/O             0  motion.analog-out-io-02                 	0.000010	--l-
+   121        float I/O             0  motion.analog-out-io-03                 	0.000010	--l-
+   121        float I/O             0  motion.analog-out-io-04                 	0.000010	--l-
+   121        float I/O             0  motion.analog-out-io-05                 	0.000010	--l-
+   121        float I/O             0  motion.analog-out-io-06                 	0.000010	--l-
+   121        float I/O             0  motion.analog-out-io-07                 	0.000010	--l-
+   121        float I/O             0  motion.analog-out-io-08                 	0.000010	--l-
+   121        float I/O             0  motion.analog-out-io-09                 	0.000010	--l-
+   121        float I/O             0  motion.analog-out-io-10                 	0.000010	--l-
+   121        float I/O             0  motion.analog-out-io-11                 	0.000010	--l-
+   121        float I/O             0  motion.analog-out-io-12                 	0.000010	--l-
+   121        float I/O             0  motion.analog-out-io-13                 	0.000010	--l-
+   121        float I/O             0  motion.analog-out-io-14                 	0.000010	--l-
+   121        float I/O             0  motion.analog-out-io-15                 	0.000010	--l-
+   121        float I/O             0  motion.analog-out-io-16                 	0.000010	--l-
+   121        float I/O             0  motion.analog-out-io-17                 	0.000010	--l-
+   121        float I/O             0  motion.analog-out-io-18                 	0.000010	--l-
+   121        float I/O             0  motion.analog-out-io-19                 	0.000010	--l-
+   121        float I/O             0  motion.analog-out-io-20                 	0.000010	--l-
+   121        float I/O             0  motion.analog-out-io-21                 	0.000010	--l-
+   121        float I/O             0  motion.analog-out-io-22                 	0.000010	--l-
+   121        float I/O             0  motion.analog-out-io-23                 	0.000010	--l-
+   121        float I/O             0  motion.analog-out-io-24                 	0.000010	--l-
+   121        float I/O             0  motion.analog-out-io-25                 	0.000010	--l-
+   121        float I/O             0  motion.analog-out-io-26                 	0.000010	--l-
+   121        float I/O             0  motion.analog-out-io-27                 	0.000010	--l-
+   121        float I/O             0  motion.analog-out-io-28                 	0.000010	--l-
+   121        float I/O             0  motion.analog-out-io-29                 	0.000010	--l-
+   121        float I/O             0  motion.analog-out-io-30                 	0.000010	--l-
+   121        float I/O             0  motion.analog-out-io-31                 	0.000010	--l-
+   121        float I/O             0  motion.analog-out-io-32                 	0.000010	--l-
+   121        float I/O             0  motion.analog-out-io-33                 	0.000010	--l-
+   121        float I/O             0  motion.analog-out-io-34                 	0.000010	--l-
+   121        float I/O             0  motion.analog-out-io-35                 	0.000010	--l-
+   121        float I/O             0  motion.analog-out-io-36                 	0.000010	--l-
+   121        float I/O             0  motion.analog-out-io-37                 	0.000010	--l-
+   121        float I/O             0  motion.analog-out-io-38                 	0.000010	--l-
+   121        float I/O             0  motion.analog-out-io-39                 	0.000010	--l-
+   121        float I/O             0  motion.analog-out-io-40                 	0.000010	--l-
+   121        float I/O             0  motion.analog-out-io-41                 	0.000010	--l-
+   121        float I/O             0  motion.analog-out-io-42                 	0.000010	--l-
+   121        float I/O             0  motion.analog-out-io-43                 	0.000010	--l-
+   121        float I/O             0  motion.analog-out-io-44                 	0.000010	--l-
+   121        float I/O             0  motion.analog-out-io-45                 	0.000010	--l-
+   121        float I/O             0  motion.analog-out-io-46                 	0.000010	--l-
+   121        float I/O             0  motion.analog-out-io-47                 	0.000010	--l-
+   121        float I/O             0  motion.analog-out-io-48                 	0.000010	--l-
+   121        float I/O             0  motion.analog-out-io-49                 	0.000010	--l-
+   121        float I/O             0  motion.analog-out-io-50                 	0.000010	--l-
+   121        bit   OUT         FALSE  motion.coord-error                      		--l-
+   121        bit   OUT         FALSE  motion.coord-mode                       		--l-
+   121        s32   OUT             0  motion.current-motion                   		--l-
+   121        float OUT             0  motion.current-vel                      	0.000010	--l-
+   121        bit   IN          FALSE  motion.digital-in-00                    		--l-
+   121        bit   IN          FALSE  motion.digital-in-01                    		--l-
+   121        bit   IN          FALSE  motion.digital-in-02                    		--l-
+   121        bit   IN          FALSE  motion.digital-in-03                    		--l-
+   121        bit   IN          FALSE  motion.digital-in-04                    		--l-
+   121        bit   IN          FALSE  motion.digital-in-05                    		--l-
+   121        bit   IN          FALSE  motion.digital-in-06                    		--l-
+   121        bit   IN          FALSE  motion.digital-in-07                    		--l-
+   121        bit   IN          FALSE  motion.digital-in-08                    		--l-
+   121        bit   IN          FALSE  motion.digital-in-09                    		--l-
+   121        bit   IN          FALSE  motion.digital-in-10                    		--l-
+   121        bit   IN          FALSE  motion.digital-in-11                    		--l-
+   121        bit   IN          FALSE  motion.digital-in-12                    		--l-
+   121        bit   IN          FALSE  motion.digital-in-13                    		--l-
+   121        bit   IN          FALSE  motion.digital-in-14                    		--l-
+   121        bit   IN          FALSE  motion.digital-in-15                    		--l-
+   121        bit   IN          FALSE  motion.digital-in-16                    		--l-
+   121        bit   IN          FALSE  motion.digital-in-17                    		--l-
+   121        bit   IN          FALSE  motion.digital-in-18                    		--l-
+   121        bit   IN          FALSE  motion.digital-in-19                    		--l-
+   121        bit   IN          FALSE  motion.digital-in-20                    		--l-
+   121        bit   OUT         FALSE  motion.digital-out-00                   		--l-
+   121        bit   OUT         FALSE  motion.digital-out-01                   		--l-
+   121        bit   OUT         FALSE  motion.digital-out-02                   		--l-
+   121        bit   OUT         FALSE  motion.digital-out-03                   		--l-
+   121        bit   OUT         FALSE  motion.digital-out-04                   		--l-
+   121        bit   OUT         FALSE  motion.digital-out-05                   		--l-
+   121        bit   OUT         FALSE  motion.digital-out-06                   		--l-
+   121        bit   OUT         FALSE  motion.digital-out-07                   		--l-
+   121        bit   OUT         FALSE  motion.digital-out-08                   		--l-
+   121        bit   OUT         FALSE  motion.digital-out-09                   		--l-
+   121        bit   OUT         FALSE  motion.digital-out-10                   		--l-
+   121        bit   OUT         FALSE  motion.digital-out-11                   		--l-
+   121        bit   OUT         FALSE  motion.digital-out-12                   		--l-
+   121        bit   OUT         FALSE  motion.digital-out-13                   		--l-
+   121        bit   OUT         FALSE  motion.digital-out-14                   		--l-
+   121        bit   OUT         FALSE  motion.digital-out-15                   		--l-
+   121        bit   OUT         FALSE  motion.digital-out-16                   		--l-
+   121        bit   OUT         FALSE  motion.digital-out-17                   		--l-
+   121        bit   OUT         FALSE  motion.digital-out-18                   		--l-
+   121        bit   OUT         FALSE  motion.digital-out-19                   		--l-
+   121        bit   OUT         FALSE  motion.digital-out-20                   		--l-
+   121        bit   I/O         FALSE  motion.digital-out-io-00                		--l-
+   121        bit   I/O         FALSE  motion.digital-out-io-01                		--l-
+   121        bit   I/O         FALSE  motion.digital-out-io-02                		--l-
+   121        bit   I/O         FALSE  motion.digital-out-io-03                		--l-
+   121        bit   I/O         FALSE  motion.digital-out-io-04                		--l-
+   121        bit   I/O         FALSE  motion.digital-out-io-05                		--l-
+   121        bit   I/O         FALSE  motion.digital-out-io-06                		--l-
+   121        bit   I/O         FALSE  motion.digital-out-io-07                		--l-
+   121        bit   I/O         FALSE  motion.digital-out-io-08                		--l-
+   121        bit   I/O         FALSE  motion.digital-out-io-09                		--l-
+   121        bit   I/O         FALSE  motion.digital-out-io-10                		--l-
+   121        bit   I/O         FALSE  motion.digital-out-io-11                		--l-
+   121        bit   I/O         FALSE  motion.digital-out-io-12                		--l-
+   121        bit   I/O         FALSE  motion.digital-out-io-13                		--l-
+   121        bit   I/O         FALSE  motion.digital-out-io-14                		--l-
+   121        bit   I/O         FALSE  motion.digital-out-io-15                		--l-
+   121        bit   I/O         FALSE  motion.digital-out-io-16                		--l-
+   121        bit   I/O         FALSE  motion.digital-out-io-17                		--l-
+   121        bit   I/O         FALSE  motion.digital-out-io-18                		--l-
+   121        bit   I/O         FALSE  motion.digital-out-io-19                		--l-
+   121        bit   I/O         FALSE  motion.digital-out-io-20                		--l-
+   121        float OUT             0  motion.distance-to-go                   	0.000010	--l-
+   121        bit   IN           TRUE  motion.enable                           		--l-
+   121        bit   IN          FALSE  motion.feed-hold                        		--l-
+   121        bit   IN          FALSE  motion.feed-inhibit                     		--l-
+   121        bit   OUT          TRUE  motion.in-position                      		--l-
+   121        bit   OUT         FALSE  motion.motion-enabled                   		--l-	      ==> ALLenable
+   121        bit   OUT         FALSE  motion.on-soft-limit                    		--l-
+   121        float IN              0  motion.pause-jog-feed                   	0.000010	--l-
+   121        float IN              0  motion.pause-offset-a                   	0.000010	--l-
+   121        float IN              0  motion.pause-offset-b                   	0.000010	--l-
+   121        float IN              0  motion.pause-offset-c                   	0.000010	--l-
+   121        bit   IN          FALSE  motion.pause-offset-enable              		--l-
+   121        bit   OUT         FALSE  motion.pause-offset-in-range            		--l-
+   121        float IN              0  motion.pause-offset-u                   	0.000010	--l-
+   121        float IN              0  motion.pause-offset-v                   	0.000010	--l-
+   121        float IN              0  motion.pause-offset-w                   	0.000010	--l-
+   121        float IN              0  motion.pause-offset-x                   	0.000010	--l-
+   121        float IN              0  motion.pause-offset-y                   	0.000010	--l-
+   121        float IN              0  motion.pause-offset-z                   	0.000010	--l-
+   121        s32   OUT             0  motion.pause-state                      		--l-
+   121        s32   OUT             0  motion.paused-at-motion                 		--l-
+   121        bit   IN          FALSE  motion.probe-input                      		--l-
+   121        s32   OUT             0  motion.program-line                     		--l-
+   121        float OUT             0  motion.requested-vel                    	0.000010	--l-
+   121        bit   IN           TRUE  motion.spindle-at-speed                 		--l-
+   121        bit   OUT          TRUE  motion.spindle-brake                    		--l-
+   121        bit   OUT         FALSE  motion.spindle-forward                  		--l-
+   121        bit   I/O         FALSE  motion.spindle-index-enable             		--l-
+   121        bit   IN          FALSE  motion.spindle-inhibit                  		--l-
+   121        bit   IN          FALSE  motion.spindle-is-oriented              		--l-
+   121        bit   OUT         FALSE  motion.spindle-locked                   		--l-
+   121        bit   OUT         FALSE  motion.spindle-on                       		--l-
+   121        bit   OUT         FALSE  motion.spindle-orient                   		--l-
+   121        float OUT             0  motion.spindle-orient-angle             	0.000010	--l-
+   121        s32   IN              0  motion.spindle-orient-fault             		--l-
+   121        s32   OUT             0  motion.spindle-orient-mode              		--l-
+   121        bit   OUT         FALSE  motion.spindle-reverse                  		--l-
+   121        float IN              0  motion.spindle-revs                     	0.000010	--l-
+   121        float OUT             0  motion.spindle-speed-cmd-rps            	0.000010	--l-
+   121        float IN              0  motion.spindle-speed-in                 	0.000010	--l-
+   121        float OUT             0  motion.spindle-speed-out                	0.000010	--l-
+   121        float OUT             0  motion.spindle-speed-out-abs            	0.000010	--l-
+   121        float OUT             0  motion.spindle-speed-out-rps            	0.000010	--l-
+   121        float OUT             0  motion.spindle-speed-out-rps-abs        	0.000010	--l-
+   121        bit   OUT         FALSE  motion.teleop-mode                      		--l-
+   121        float OUT             0  motion.tooloffset.a                     	0.000010	--l-
+   121        float OUT             0  motion.tooloffset.b                     	0.000010	--l-
+   121        float OUT             0  motion.tooloffset.c                     	0.000010	--l-
+   121        float OUT             0  motion.tooloffset.u                     	0.000010	--l-
+   121        float OUT             0  motion.tooloffset.v                     	0.000010	--l-
+   121        float OUT             0  motion.tooloffset.w                     	0.000010	--l-
+   121        float OUT             0  motion.tooloffset.x                     	0.000010	--l-
+   121        float OUT             0  motion.tooloffset.y                     	0.000010	--l-
+   121        float OUT             0  motion.tooloffset.z                     	0.000010	--l-
+   861    863 s32   OUT          1104  or6.estop-error.funct.time              		----
+   861    863 s32   I/O          7908  or6.estop-error.funct.tmax              		----
+   861    863 bit   OUT         FALSE  or6.estop-error.funct.tmax-inc          		----
+   861    863 bit   IN          FALSE  or6.estop-error.in0                     		--l-	      <== gpio-hw-error
+   861    863 bit   IN          FALSE  or6.estop-error.in1                     		--l-	      <== pwm-hw-error
+   861    863 bit   IN          FALSE  or6.estop-error.in2                     		--l-	      <== temp-hw-error
+   861    863 bit   IN          FALSE  or6.estop-error.in3                     		--l-	      <== watchdog-error
+   861    863 bit   IN          FALSE  or6.estop-error.in4                     		--l-	      <== hbp-error
+   861    863 bit   IN          FALSE  or6.estop-error.in5                     		--l-	      <== e0-error
+   861    863 bit   OUT         FALSE  or6.estop-error.out                     		--l-	      ==> estop-error
+   593        bit   IN          FALSE  parport.0.pin-01-out                    		--l-	      <== ALLenable
+   593        bit   IN          FALSE  parport.0.pin-02-out                    		--l-	      <== Xdir
+   593        bit   IN          FALSE  parport.0.pin-03-out                    		--l-	      <== Xstep
+   593        bit   IN          FALSE  parport.0.pin-04-out                    		--l-	      <== Ydir
+   593        bit   IN          FALSE  parport.0.pin-05-out                    		--l-	      <== Ystep
+   593        bit   IN          FALSE  parport.0.pin-06-out                    		--l-	      <== Zdir
+   593        bit   IN          FALSE  parport.0.pin-07-out                    		--l-	      <== Zstep
+   593        bit   IN          FALSE  parport.0.pin-08-out                    		--l-
+   593        bit   IN          FALSE  parport.0.pin-09-out                    		--l-
+   593        bit   OUT         FALSE  parport.0.pin-10-in                     		--l-
+   593        bit   OUT          TRUE  parport.0.pin-10-in-not                 		--l-
+   593        bit   OUT         FALSE  parport.0.pin-11-in                     		--l-
+   593        bit   OUT          TRUE  parport.0.pin-11-in-not                 		--l-
+   593        bit   OUT         FALSE  parport.0.pin-12-in                     		--l-
+   593        bit   OUT          TRUE  parport.0.pin-12-in-not                 		--l-
+   593        bit   OUT          TRUE  parport.0.pin-13-in                     		--l-
+   593        bit   OUT         FALSE  parport.0.pin-13-in-not                 		--l-
+   593        bit   IN          FALSE  parport.0.pin-14-out                    		--l-
+   593        bit   OUT          TRUE  parport.0.pin-15-in                     		--l-
+   593        bit   OUT         FALSE  parport.0.pin-15-in-not                 		--l-
+   593        bit   IN          FALSE  parport.0.pin-16-out                    		--l-
+   593        bit   IN          FALSE  parport.0.pin-17-out                    		--l-
+   593        s32   OUT          2292  parport.0.read.time                     		----
+   593        s32   I/O          8760  parport.0.read.tmax                     		----
+   593        bit   OUT         FALSE  parport.0.read.tmax-inc                 		----
+   593        s32   OUT             0  parport.0.reset.time                    		----
+   593        s32   I/O             0  parport.0.reset.tmax                    		----
+   593        bit   OUT         FALSE  parport.0.reset.tmax-inc                		----
+   593        s32   OUT             0  parport.0.write.time                    		----
+   593        s32   I/O             0  parport.0.write.tmax                    		----
+   593        bit   OUT         FALSE  parport.0.write.tmax-inc                		----
+   593        s32   OUT             0  parport.read-all.time                   		----
+   593        s32   I/O             0  parport.read-all.tmax                   		----
+   593        bit   OUT         FALSE  parport.read-all.tmax-inc               		----
+   593        s32   OUT             0  parport.write-all.time                  		----
+   593        s32   I/O             0  parport.write-all.tmax                  		----
+   593        bit   OUT         FALSE  parport.write-all.tmax-inc              		----
+    66        s32   OUT        992988  servo-thread.curr-period                		----
+    66        s32   OUT         16224  servo-thread.time                       		----
+    66        s32   I/O        105156  servo-thread.tmax                       		----
+   664        s32   OUT             0  stepgen.0.counts                        		--l-
+   664        bit   OUT         FALSE  stepgen.0.dir                           		--l-
+   664        bit   IN          FALSE  stepgen.0.enable                        		--l-	      <== emcmot-0-enable
+   664        float IN              0  stepgen.0.position-cmd                  	0.000010	--l-	      <== Xpos-cmd
+   664        float OUT             0  stepgen.0.position-fb                   	0.000010	--l-
+   664        bit   OUT         FALSE  stepgen.0.step                          		--l-
+   664        s32   OUT             0  stepgen.1.counts                        		--l-
+   664        bit   OUT         FALSE  stepgen.1.dir                           		--l-
+   664        bit   IN          FALSE  stepgen.1.enable                        		--l-	      <== emcmot-1-enable
+   664        float IN              0  stepgen.1.position-cmd                  	0.000010	--l-	      <== Ypos-cmd
+   664        float OUT             0  stepgen.1.position-fb                   	0.000010	--l-
+   664        bit   OUT         FALSE  stepgen.1.step                          		--l-
+   664        s32   OUT             0  stepgen.2.counts                        		--l-
+   664        bit   OUT         FALSE  stepgen.2.dir                           		--l-
+   664        bit   IN          FALSE  stepgen.2.enable                        		--l-	      <== emcmot-2-enable
+   664        float IN              0  stepgen.2.position-cmd                  	0.000010	--l-	      <== Zpos-cmd
+   664        float OUT             0  stepgen.2.position-fb                   	0.000010	--l-
+   664        bit   OUT         FALSE  stepgen.2.step                          		--l-
+   664        s32   OUT             0  stepgen.3.counts                        		--l-
+   664        bit   OUT         FALSE  stepgen.3.dir                           		--l-
+   664        bit   IN          FALSE  stepgen.3.enable                        		--l-	      <== emcmot-3-enable
+   664        float IN              0  stepgen.3.position-cmd                  	0.000010	--l-
+   664        float OUT             0  stepgen.3.position-fb                   	0.000010	--l-
+   664        bit   OUT         FALSE  stepgen.3.step                          		--l-
+   664        s32   OUT           612  stepgen.capture-position.time           		----
+   664        s32   I/O          6960  stepgen.capture-position.tmax           		----
+   664        bit   OUT         FALSE  stepgen.capture-position.tmax-inc       		----
+   664        s32   OUT           936  stepgen.make-pulses.time                		----
+   664        s32   I/O         38352  stepgen.make-pulses.tmax                		----
+   664        bit   OUT         FALSE  stepgen.make-pulses.tmax-inc            		----
+   664        s32   OUT           996  stepgen.update-freq.time                		----
+   664        s32   I/O          7728  stepgen.update-freq.tmax                		----
+   664        bit   OUT         FALSE  stepgen.update-freq.tmax-inc            		----
+   772        float I/O             1  storage.e0.extrude-scale                	0.000010	--l-
+   772        float I/O          1.75  storage.e0.filament-dia                 	0.000010	--l-
+   772        float I/O           1.2  storage.e0.jog-velocity                 	0.000010	--l-
+   772        float I/O           0.6  storage.e0.retract-len                  	0.000010	--l-
+   772        float I/O            25  storage.e0.retract-vel                  	0.000010	--l-
+   772        float I/O             1  storage.e1.extrude-scale                	0.000010	--l-
+   772        float I/O          1.75  storage.e1.filament-dia                 	0.000010	--l-
+   772        float I/O           1.2  storage.e1.jog-velocity                 	0.000010	--l-
+   772        float I/O           0.5  storage.e1.retract-len                  	0.000010	--l-
+   772        float I/O            25  storage.e1.retract-vel                  	0.000010	--l-
+   772        float I/O             0  storage.gantry.home-offset-2-0          	0.000010	--l-
+   772        float I/O           0.4  storage.gantry.home-offset-2-1          	0.000010	--l-
+   772        float I/O     0.9803922  storage.l0.b                            	0.000010	--l-
+   772        float I/O     0.0745098  storage.l0.g                            	0.000010	--l-
+   772        float I/O   0.007843137  storage.l0.r                            	0.000010	--l-
+   772        float I/O     0.7843137  storage.l0.w                            	0.000010	--l-
+   772        bit   IN           TRUE  storage.read-trigger                    		--l-
+   772        bit   IN          FALSE  storage.write-trigger                   		--l-
+
+Signals:
+Type          Value  flags Name                   linked to:
+bit           FALSE  --    ALLenable            
+                                 <== motion.motion-enabled
+                                 ==> parport.0.pin-01-out
+bit           FALSE  --    Xdir                 
+                                 ==> parport.0.pin-02-out
+float             0  --    Xpos-cmd             
+                                 <== axis.0.motor-pos-cmd
+                                 ==> stepgen.0.position-cmd
+bit           FALSE  --    Xstep                
+                                 ==> parport.0.pin-03-out
+bit           FALSE  --    Ydir                 
+                                 ==> parport.0.pin-04-out
+float             0  --    Ypos-cmd             
+                                 <== axis.1.motor-pos-cmd
+                                 ==> stepgen.1.position-cmd
+bit           FALSE  --    Ystep                
+                                 ==> parport.0.pin-05-out
+bit           FALSE  --    Zdir                 
+                                 ==> parport.0.pin-06-out
+float             0  --    Zpos-cmd             
+                                 <== axis.2.motor-pos-cmd
+                                 ==> stepgen.2.position-cmd
+bit           FALSE  --    Zstep                
+                                 ==> parport.0.pin-07-out
+bit           FALSE  --    e0-error             
+                                 ==> or6.estop-error.in5
+bit           FALSE  --    emcmot-0-enable      
+                                 <== axis.0.amp-enable-out
+                                 ==> stepgen.0.enable
+bit           FALSE  --    emcmot-1-enable      
+                                 <== axis.1.amp-enable-out
+                                 ==> stepgen.1.enable
+bit           FALSE  --    emcmot-2-enable      
+                                 <== axis.2.amp-enable-out
+                                 ==> stepgen.2.enable
+bit           FALSE  --    emcmot-3-enable      
+                                 <== axis.3.amp-enable-out
+                                 ==> stepgen.3.enable
+bit           FALSE  --    estop-error          
+                                 ==> estop-latch.fault-in
+                                 <== or6.estop-error.out
+bit           FALSE  --    estop-in             
+                                 ==> iocontrol.0.emc-enable-in
+bit            TRUE  --    estop-out            
+                                 <== estop-latch.ok-out
+bit           FALSE  --    estop-reset          
+                                 ==> estop-latch.reset
+                                 <== iocontrol.0.user-request-enable
+bit            TRUE  --    estop-user           
+                                 ==> estop-latch.ok-in
+                                 <== iocontrol.0.user-enable-out
+bit           FALSE  --    gpio-hw-error        
+                                 ==> or6.estop-error.in0
+bit           FALSE  --    hbp-error            
+                                 ==> or6.estop-error.in4
+bit           FALSE  --    iocontrol-0-tool-change 
+                                 <== iocontrol.0.tool-change
+                                 ==> iocontrol.0.tool-changed
+bit           FALSE  --    iocontrol-0-tool-prepare 
+                                 <== iocontrol.0.tool-prepare
+                                 ==> iocontrol.0.tool-prepared
+bit           FALSE  --    limit-0-home         
+                                 ==> axis.0.home-sw-in
+bit           FALSE  --    limit-0-max          
+                                 ==> axis.0.pos-lim-sw-in
+bit           FALSE  --    limit-0-min          
+                                 ==> axis.0.neg-lim-sw-in
+bit           FALSE  --    limit-1-home         
+                                 ==> axis.1.home-sw-in
+bit           FALSE  --    limit-1-max          
+                                 ==> axis.1.pos-lim-sw-in
+bit           FALSE  --    limit-1-min          
+                                 ==> axis.1.neg-lim-sw-in
+bit           FALSE  --    limit-2-home         
+                                 ==> axis.2.home-sw-in
+bit           FALSE  --    limit-2-max          
+                                 ==> axis.2.pos-lim-sw-in
+bit           FALSE  --    limit-2-min          
+                                 ==> axis.2.neg-lim-sw-in
+bit           FALSE  --    limit-3-home         
+                                 ==> axis.3.home-sw-in
+bit           FALSE  --    limit-3-max          
+                                 ==> axis.3.pos-lim-sw-in
+bit           FALSE  --    limit-3-min          
+                                 ==> axis.3.neg-lim-sw-in
+bit           FALSE  --    pwm-hw-error         
+                                 ==> or6.estop-error.in1
+bit           FALSE  --    temp-hw-error        
+                                 ==> or6.estop-error.in2
+bit           FALSE  --    watchdog-error       
+                                 ==> or6.estop-error.in3
+
+Parameters:
+ Comp    Inst Type   Dir         Value  Name
+   121         bit   RO          FALSE  motion.debug-bit-0
+   121         bit   RO          FALSE  motion.debug-bit-1
+   121         float RO              1  motion.debug-float-0
+   121         float RO              0  motion.debug-float-1
+   121         float RO              0  motion.debug-float-2
+   121         float RO              1  motion.debug-float-3
+   121         s32   RO              0  motion.debug-s32-0
+   121         s32   RO              0  motion.debug-s32-1
+   121         u32   RO     0x000F41AB  motion.servo.last-period
+   121         u32   RW     0x00000000  motion.servo.overruns
+   593         u32   RW     0x00000000  parport.0.debug1
+   593         u32   RW     0x00000000  parport.0.debug2
+   593         bit   RW          FALSE  parport.0.pin-01-out-invert
+   593         bit   RW          FALSE  parport.0.pin-01-out-reset
+   593         bit   RW          FALSE  parport.0.pin-02-out-invert
+   593         bit   RW          FALSE  parport.0.pin-02-out-reset
+   593         bit   RW          FALSE  parport.0.pin-03-out-invert
+   593         bit   RW          FALSE  parport.0.pin-03-out-reset
+   593         bit   RW          FALSE  parport.0.pin-04-out-invert
+   593         bit   RW          FALSE  parport.0.pin-04-out-reset
+   593         bit   RW          FALSE  parport.0.pin-05-out-invert
+   593         bit   RW          FALSE  parport.0.pin-05-out-reset
+   593         bit   RW          FALSE  parport.0.pin-06-out-invert
+   593         bit   RW          FALSE  parport.0.pin-06-out-reset
+   593         bit   RW          FALSE  parport.0.pin-07-out-invert
+   593         bit   RW          FALSE  parport.0.pin-07-out-reset
+   593         bit   RW          FALSE  parport.0.pin-08-out-invert
+   593         bit   RW          FALSE  parport.0.pin-08-out-reset
+   593         bit   RW          FALSE  parport.0.pin-09-out-invert
+   593         bit   RW          FALSE  parport.0.pin-09-out-reset
+   593         bit   RW          FALSE  parport.0.pin-14-out-invert
+   593         bit   RW          FALSE  parport.0.pin-14-out-reset
+   593         bit   RW          FALSE  parport.0.pin-16-out-invert
+   593         bit   RW          FALSE  parport.0.pin-16-out-reset
+   593         bit   RW          FALSE  parport.0.pin-17-out-invert
+   593         bit   RW          FALSE  parport.0.pin-17-out-reset
+   593         u32   RW     0x00000000  parport.0.reset-time
+   664         u32   RW     0x000F4240  stepgen.0.dirhold
+   664         u32   RW     0x000F4240  stepgen.0.dirsetup
+   664         float RO              0  stepgen.0.frequency
+   664         float RW            200  stepgen.0.maxaccel
+   664         float RW             20  stepgen.0.maxvel
+   664         float RW           1600  stepgen.0.position-scale
+   664         s32   RO              0  stepgen.0.rawcounts
+   664         u32   RW     0x000F4240  stepgen.0.steplen
+   664         u32   RW     0x000F4240  stepgen.0.stepspace
+   664         u32   RW     0x000F4240  stepgen.1.dirhold
+   664         u32   RW     0x000F4240  stepgen.1.dirsetup
+   664         float RO              0  stepgen.1.frequency
+   664         float RW            200  stepgen.1.maxaccel
+   664         float RW             20  stepgen.1.maxvel
+   664         float RW           1600  stepgen.1.position-scale
+   664         s32   RO              0  stepgen.1.rawcounts
+   664         u32   RW     0x000F4240  stepgen.1.steplen
+   664         u32   RW     0x000F4240  stepgen.1.stepspace
+   664         u32   RW     0x000F4240  stepgen.2.dirhold
+   664         u32   RW     0x000F4240  stepgen.2.dirsetup
+   664         float RO              0  stepgen.2.frequency
+   664         float RW            200  stepgen.2.maxaccel
+   664         float RW             20  stepgen.2.maxvel
+   664         float RW           1600  stepgen.2.position-scale
+   664         s32   RO              0  stepgen.2.rawcounts
+   664         u32   RW     0x000F4240  stepgen.2.steplen
+   664         u32   RW     0x000F4240  stepgen.2.stepspace
+   664         u32   RW     0x000F4240  stepgen.3.dirhold
+   664         u32   RW     0x000F4240  stepgen.3.dirsetup
+   664         float RO              0  stepgen.3.frequency
+   664         float RW            200  stepgen.3.maxaccel
+   664         float RW             20  stepgen.3.maxvel
+   664         float RW           1600  stepgen.3.position-scale
+   664         s32   RO              0  stepgen.3.rawcounts
+   664         u32   RW     0x000F4240  stepgen.3.steplen
+   664         u32   RW     0x000F4240  stepgen.3.stepspace
+   121         float RO              0  tc.0.acc
+   121         float RO              0  tc.0.pos
+   121         float RO              0  tc.0.vel
+   121         float RO              0  tc.1.acc
+   121         float RO              0  tc.1.pos
+   121         float RO              0  tc.1.vel
+   121         float RO              0  tc.2.acc
+   121         float RO              0  tc.2.pos
+   121         float RO              0  tc.2.vel
+   121         float RO              0  tc.3.acc
+   121         float RO              0  tc.3.pos
+   121         float RO              0  tc.3.vel
+   121         u32   RO     0x00000000  traj.active_tc
+   121         float RO              0  traj.pos_out
+   121         float RO              0  traj.vel_out
+
+Exported Functions:
+  Comp   Inst CodeAddr      Arg           FP   Users Type    Name
+   738    740 7f4625f370d9  7f46280b1ba8  YES      1 xthread debounce.funct
+    66        7f46280d32f9  000000000000  NO       0 user    delinst
+   881    883 7f4625b30e19  7f46280b1998  NO       1 xthread estop-latch.funct
+   121        7f46267f7d26  000000000000  YES      1 xthread motion-command-handler
+   121        7f46267fbf82  000000000000  YES      1 xthread motion-controller
+    66        7f46280d3157  000000000000  NO       0 user    newinst
+   861    863 7f4625d33f6a  7f46280b1a00  NO       1 xthread or6.estop-error.funct
+   593        7f462633f9d0  7f46280b2168  NO       1 thread  parport.0.read
+   593        7f462633fb61  7f46280b2168  NO       0 thread  parport.0.reset
+   593        7f462633fce7  7f46280b2168  NO       0 thread  parport.0.write
+   593        7f462633ffb0  7f46280b2168  NO       0 thread  parport.read-all
+   593        7f4626340005  7f46280b2168  NO       0 thread  parport.write-all
+   664        7f462613a83f  7f46280b1d48  YES      1 thread  stepgen.capture-position
+   664        7f462613a3b3  7f46280b1d48  NO       1 thread  stepgen.make-pulses
+   664        7f462613a9c5  7f46280b1d48  YES      1 thread  stepgen.update-freq
+
+Realtime Threads (flavor: rt-preempt, currently running) :
+     Period  FP CPU   Name                                          Time  Max-Time util  max  jitter-95%     flags
+    1000000  YES -1   servo-thread                                 19644,   105156   1%  10%  +/- 0.96% 
+                    1 stepgen.capture-position
+                    2 motion-command-handler
+                    3 parport.0.read
+                    4 or6.estop-error.funct
+                    5 estop-latch.funct
+                    6 motion-controller
+                    7 stepgen.update-freq
+                    8 debounce.funct
+                    9 stepgen.make-pulses
+
+
+Rings:
+ID    Name                                     Size       Type   Rdr Wrt Ref Flags 
+
+Exported vtables:
+ID      Name                                           Version Refcnt  Context Owner
+   108  lineardeltakins                           1000    1       RT      106   lineardeltakins                         
+   120  tp                                        2000    1       RT      118   tp                                      
+
+Epsilon	Value
+0	0.000010
+1	0.100000
+2	0.000000
+3	0.000000
+4	0.000000
+

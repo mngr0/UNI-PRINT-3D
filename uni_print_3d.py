@@ -10,7 +10,7 @@ from fdm.config import base
 from fdm.config import storage
 from fdm.config import motion
 import hardware
-#import hal_tclab
+
 
 
 # initialize the RTAPI command client
@@ -38,7 +38,7 @@ storage.init_storage('storage.ini')
 # reading functions
 hardware.hardware_read()
 #base.gantry_read(gantryAxis=2, thread='servo-thread')
-hal.addf('motion-command-handler', 'servo-thread')
+
 
 numFans = 0 #c.find('FDM', 'NUM_FANS')
 numExtruders = 1 # c.find('FDM', 'NUM_EXTRUDERS')
@@ -46,7 +46,7 @@ numLights = 0 #c.find('FDM', 'NUM_LIGHTS')
 withAbp = 1 #c.find('FDM', 'ABP', False)
 
 # Axis-of-motion Specific Configs (not the GUI)
-# ve.velocity_extrusion(extruders=numExtruders, thread='servo-thread')
+ve.velocity_extrusion(extruders=numExtruders, thread='servo-thread')
 # X [0] Axis
 base.setup_stepper(section='AXIS_0', axisIndex=0, stepgenIndex=0, stepgenType="stepgen")
 # Y [1] Axis
@@ -58,17 +58,17 @@ base.setup_stepper(section='AXIS_2', axisIndex=2, stepgenIndex=2, stepgenType="s
 #            gantry=True, gantryJoint=1)
 # Extruder, velocity controlled
 
-base.setup_stepper(section='AXIS_3', axisIndex=3, stepgenIndex=3, stepgenType="stepgen")
+#base.setup_stepper(section='AXIS_3', axisIndex=3, stepgenIndex=3, stepgenType="stepgen")
 
-#base.setup_stepper(section='EXTRUDER_0', axisIndex=3, stepgenIndex=3, velocitySignal='ve-extrude-vel', stepgenType="stepgen")
+base.setup_stepper(section='EXTRUDER_0', axisIndex=3, stepgenIndex=3, velocitySignal='ve-extrude-vel', stepgenType="stepgen")
 
-hal.loadusr("hal_tclab",name="hal_tclab",wait_name="hal_tclab")
+#hal.loadusr("hal_tclab",name="hal_tclab",wait_name="hal_tclab")
 
 # Temperature Signals
-base.create_temperature_control(name='hbp', section='HBP',
-                                thread='servo-thread')
-base.create_temperature_control(name='e0', section='EXTRUDER_0',
-                                thread='servo-thread')
+#base.create_temperature_control(name='hbp', section='HBP',
+#                                thread='servo-thread')
+#base.create_temperature_control(name='e0', section='EXTRUDER_0',
+#                                thread='servo-thread')
 
 # LEDs
 #for i in range(0, numLights):
@@ -77,25 +77,25 @@ base.create_temperature_control(name='e0', section='EXTRUDER_0',
 # hardware.setup_hbp_led(thread='servo-thread')
 
 # Standard I/O - EStop, Enables, Limit Switches, Etc
-errorSignals = ['gpio-hw-error', 'pwm-hw-error', 'temp-hw-error',
-                'watchdog-error', 'hbp-error']
+# errorSignals = ['gpio-hw-error', 'pwm-hw-error', 'temp-hw-error',
+                # 'watchdog-error', 'hbp-error']
+errorSignals = [  ]
 for i in range(0, numExtruders):
     errorSignals.append('e%i-error' % i)
-base.setup_estop(errorSignals, thread='servo-thread')
+base.setup_estop_loopback()
 base.setup_tool_loopback()
 # Probe
-base.setup_probe(thread='servo-thread')
+#base.setup_probe(thread='servo-thread')
 # Setup Hardware
-# hardware.setup_hardware(thread='servo-thread')
+hardware.setup_hardware(thread='servo-thread')
 
 # write out functions
-hal.addf('motion-controller', 'servo-thread')
-# base.gantry_write(gantryAxis=2, thread='servo-thread')
-#hardware.hardware_write()
+
+hardware.hardware_write()
 
 # Storage
 storage.read_storage()
-
+print("fine")
 # start haltalk server after everything is initialized
 # else binding the remote components on the UI might fail
 hal.loadusr('haltalk', wait=True)

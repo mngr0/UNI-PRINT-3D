@@ -82,7 +82,7 @@ def setup_stepper(stepgenIndex, section, axisIndex=None,
 
     assign_param(sigBase,"position-scale",c.find("ABP", 'SCALE'))
     assign_param(sigBase,"maxaccel",c.find("ABP", 'STEPGEN_MAXACC'))
-    assign_param(sigBase,"maxvel",c.find("ABP", 'STEPGEN_MAXVEL'))
+    #assign_param(sigBase,"maxvel",c.find("ABP", 'STEPGEN_MAXVEL'))
 
     # position command and feedback
     limitHome = hal.newsig('limit-%i-home' % axisIndex, hal.HAL_BIT)
@@ -91,6 +91,10 @@ def setup_stepper(stepgenIndex, section, axisIndex=None,
     limitHome.link('%s.home-sw-in' % axis)
     limitMin.link('%s.neg-lim-sw-in' % axis)
     limitMax.link('%s.pos-lim-sw-in' % axis)
+
+    if velocityControlled:
+        hal.net(velocitySignal, '%s.velocity-cmd' % stepgen)
+        #controlType.set(1) # enable velocity control
 
     # storage.setup_gantry_storage(axisIndex, gantryJoint)
 
@@ -199,19 +203,20 @@ def create_temperature_control(name, section, thread, hardwareOkSignal=None,
 
 def setup_estop(errorSignals, thread):
     # Create estop signal chain
+    estopTest = hal.Signal('estop-test', hal.HAL_BIT)
     estopUser = hal.Signal('estop-user', hal.HAL_BIT)
     estopReset = hal.Signal('estop-reset', hal.HAL_BIT)
     estopOut = hal.Signal('estop-out', hal.HAL_BIT)
     estopIn = hal.Signal('estop-in', hal.HAL_BIT)
     estopError = hal.Signal('estop-error', hal.HAL_BIT)
 
-    num = len(errorSignals)
-    orComp = rt.newinst('orn', 'or%i.estop-error' % num, pincount=num)
-    hal.addf(orComp.name, thread)
-    for n, sig in enumerate(errorSignals):
-        orComp.pin('in%i' % n).link(sig)
-    orComp.pin('out').link(estopError)
-
+    #num = len(errorSignals)
+    #orComp = rt.newinst('orn', 'or%i.estop-error' % num, pincount=num)
+    #hal.addf(orComp.name, thread)
+    #for n, sig in enumerate(errorSignals):
+    #    orComp.pin('in%i' % n).link(sig)
+    #orComp.pin('out').link(estopError)
+    estopError.set(0)
     estopLatch = rt.newinst('estop_latch', 'estop-latch')
     hal.addf(estopLatch.name, thread)
     estopLatch.pin('ok-in').link(estopUser)
@@ -219,8 +224,10 @@ def setup_estop(errorSignals, thread):
     estopLatch.pin('reset').link(estopReset)
     estopLatch.pin('ok-out').link(estopOut)
 
-    estopUser.link('iocontrol.0.user-enable-out')
-    estopReset.link('iocontrol.0.user-request-enable')
+
+    hal.Pin('iocontrol.0.user-request-enable').link(estopTest)
+    #estopTest.link('iocontrol.0.user-enable-out')
+
 
     # Monitor estop input from hardware
     estopIn.link('iocontrol.0.emc-enable-in')
