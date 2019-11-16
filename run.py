@@ -18,7 +18,7 @@ try:
     launcher.cleanup_session()
     launcher.ensure_mklauncher()
     # launcher.load_bbio_file('paralell_cape3.bbio')
-#    launcher.start_process("configserver -n MendelMax ~/Cetus")
+    launcher.start_process("configserver -n MendelMax ~/Machineface")
     launcher.start_process('linuxcnc UNI-PRINT-3D.ini')
     while True:
         launcher.check_processes()

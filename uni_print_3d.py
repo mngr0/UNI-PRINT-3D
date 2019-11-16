@@ -62,13 +62,18 @@ base.setup_stepper(section='AXIS_2', axisIndex=2, stepgenIndex=2, stepgenType="s
 
 base.setup_stepper(section='EXTRUDER_0', axisIndex=3, stepgenIndex=3, velocitySignal='ve-extrude-vel', stepgenType="stepgen")
 
-#hal.loadusr("hal_tclab",name="hal_tclab",wait_name="hal_tclab")
+# Setup Hardware
+hardware.setup_hardware(thread='servo-thread')
+
+
+
+
+base.setup_tclab()
 
 # Temperature Signals
-#base.create_temperature_control(name='hbp', section='HBP',
-#                                thread='servo-thread')
-#base.create_temperature_control(name='e0', section='EXTRUDER_0',
-#                                thread='servo-thread')
+base.create_temperature_control(name='e0', section='EXTRUDER_0', thread='servo-thread',tclab_index=0)
+
+base.create_temperature_control(name='hbp', section='HBP', thread='servo-thread',tclab_index=1)
 
 # LEDs
 #for i in range(0, numLights):
@@ -82,14 +87,13 @@ base.setup_stepper(section='EXTRUDER_0', axisIndex=3, stepgenIndex=3, velocitySi
 errorSignals = [  ]
 for i in range(0, numExtruders):
     errorSignals.append('e%i-error' % i)
-base.setup_estop_loopback()
+base.setup_estop_loopback()#([],thread='servo-thread')#_loopback()
 base.setup_tool_loopback()
 # Probe
 #base.setup_probe(thread='servo-thread')
-# Setup Hardware
-hardware.setup_hardware(thread='servo-thread')
 
 # write out functions
+base.setup_delta()
 
 hardware.hardware_write()
 

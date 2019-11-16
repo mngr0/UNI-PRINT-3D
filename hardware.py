@@ -17,6 +17,8 @@ def hardware_write():
     hal.addf('debounce.funct', 'servo-thread')
     hal.addf('stepgen.make-pulses','base-thread') #must be base-thread
     hal.addf('parport.0.write','base-thread') #must be base-thread
+    hal.addf('switches-check.funct',"servo-thread")
+    hal.addf('pause-home.funct',"servo-thread")
 def init_hardware():
     watchList = []
 
@@ -24,10 +26,19 @@ def init_hardware():
     rt.loadrt('hal_parport', cfg='0x0378')
     rt.loadrt('stepgen', step_type='0,0,0,0',ctrl_type="p,p,p,v")
     deb = rt.newinst('debounce', 'debounce')
-
+    # witches-check=
+    rt.newinst("orn","switches-check", pincount="4")
+    # pause-check=
+    rt.newinst("andn","pause-home", pincount="2")
 
 def setup_hardware(thread):
     # Stepper
+    checkFiloRawSignal = hal.newsig("filo_raw", hal.HAL_BIT)
+    checkFiloSignal = hal.newsig("filo", hal.HAL_BIT)
+    hal.Pin("parport.0.pin-13-in-not" ).link(checkFiloRawSignal)
+    hal.Pin("debounce.%s.in"%str(6)).link(checkFiloRawSignal)
+    hal.Pin("debounce.%s.out"%str(6)).link(checkFiloSignal)
+    hal.Pin("switches-check.in3").link(checkFiloSignal)
     pinout={
         "step":{ "X":"03",
                  "Y":"05",
@@ -49,7 +60,8 @@ def setup_hardware(thread):
         stepSignal = hal.newsig('%sstep' % a, hal.HAL_BIT)
         dirSignal = hal.newsig('%sdir' % a, hal.HAL_BIT)
         homeRawSignal = hal.newsig("%shome_raw"%a, hal.HAL_BIT)
-
+        homeNotRawSignal = hal.newsig("%shome_raw_not"%a, hal.HAL_BIT)
+        checkSignal = hal.newsig("%sswitch_check"%a, hal.HAL_BIT)
         #enSignal = hal.newsig('%senable' % a, hal.HAL_BIT)
         hal.Pin('stepgen.%s.position-cmd' % str(i)).link(posSignal)
         hal.Pin('axis.%s.motor-pos-cmd' % str(i)).link(posSignal)
@@ -63,16 +75,28 @@ def setup_hardware(thread):
         hal.Pin("parport.0.pin-%s-in-not" % pinout["home"][a]).link(homeRawSignal)
         hal.Pin("debounce.%s.in"%str(i)).link(homeRawSignal)
         hal.Pin("debounce.%s.out"%str(i)).link(hal.Signal("limit-%s-home"%str(i)))
-        #hal.Pin("stepgen.%s.enable"%str(i)).link(enSignal)
-        #hal.Pin("axis.%s.amp-enable-out"%str(i)).link(enSignal)
+
+        hal.Pin("parport.0.pin-%s-in" % pinout["home"][a]).link(homeNotRawSignal)
+        hal.Pin("debounce.%s.in"%str(i+3)).link(homeNotRawSignal)
+        hal.Pin("debounce.%s.out"%str(i+3)).link(checkSignal)
+        hal.Pin("switches-check.in%s"%str(i)).link(checkSignal)
+    switchOut = hal.newsig("switches-out",hal.HAL_BIT)
+    hal.Pin("switches-check.out").link(switchOut)
+    hal.Pin("pause-home.in0").link(switchOut)
+
+
     enableSignal = hal.newsig("ALLenable",hal.HAL_BIT)
     hal.Pin('motion.motion-enabled').link(enableSignal)
     hal.Pin('parport.0.pin-01-out').link(enableSignal)
     # link emcmot.xx.enable to stepper driver enable signals
 
+    motionOn = hal.newsig("is-running",hal.HAL_BIT)
+    hal.Pin("halui.program.is-running").link(motionOn)
+    hal.Pin("pause-home.in1").link(motionOn)
 
-
-
+    doPause = hal.newsig("do-pause",hal.HAL_BIT)
+    hal.Pin("pause-home.out").link(doPause)
+    hal.Pin("halui.program.pause")
 
 def setup_hbp_led(thread):
     pass

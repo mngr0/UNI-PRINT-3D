@@ -94,12 +94,6 @@ def setup_stepper(stepgenIndex, section, axisIndex=None,
 
     if velocityControlled:
         hal.net(velocitySignal, '%s.velocity-cmd' % stepgen)
-        #controlType.set(1) # enable velocity control
-
-    # storage.setup_gantry_storage(axisIndex, gantryJoint)
-
-    # stepper pins configured in hardware setup
-
 
 def setup_stepper_multiplexer(stepgenIndex, sections, selSignal, thread):
     num = len(sections)
@@ -148,21 +142,33 @@ def setup_probe(thread):
 
     motion.setup_probe_io()
 
+def setup_tclab():
+    #import hal_tclab
+    # from hal_tclab import prepare
+    # prepare()
+    hal.loadusr("hal_tclab",name="hal_tclab",wait_name="hal_tclab",wait_timeout=15)
+    hal.Pin("hal_tclab.enable").link(hal.Signal("ALLenable"))
+
+
 
 def create_temperature_control(name, section, thread, hardwareOkSignal=None,
-                               coolingFan=None, hotendFan=None):
+                               coolingFan=None, hotendFan=None, tclab_index=0):
+
     tempSet = hal.newsig('%s-temp-set' % name, hal.HAL_FLOAT)
     tempMeas = hal.newsig('%s-temp-meas' % name, hal.HAL_FLOAT)
     tempInRange = hal.newsig('%s-temp-in-range' % name, hal.HAL_BIT)
-    tempPwm = hal.newsig('%s-temp-pwm' % name, hal.HAL_FLOAT)
-    tempPwmMax = hal.newsig('%s-temp-pwm-max' % name, hal.HAL_FLOAT)
+    active = hal.newsig('%s-active' % name, hal.HAL_BIT)
     tempLimitMin = hal.newsig('%s-temp-limit-min' % name, hal.HAL_FLOAT)
     tempLimitMax = hal.newsig('%s-temp-limit-max' % name, hal.HAL_FLOAT)
-    tempStandby = hal.newsig('%s-temp-standby' % name, hal.HAL_FLOAT)
+
+    hal.Pin("hal_tclab.temperature-%s"%str(tclab_index)).link(tempMeas)
+    hal.Pin("hal_tclab.setpoint-%s"%str(tclab_index)).link(tempSet)
+    hal.Pin("hal_tclab.enable-%s"%str(tclab_index)).link(active)
+
     tempInLimit = hal.newsig('%s-temp-in-limit' % name, hal.HAL_BIT)
     tempThermOk = hal.newsig('%s-temp-therm-ok' % name, hal.HAL_BIT)
     error = hal.newsig('%s-error' % name, hal.HAL_BIT)
-    active = hal.newsig('%s-active' % name, hal.HAL_BIT)
+
 
     tempPidPgain = hal.newsig('%s-temp-pid-Pgain' % name, hal.HAL_FLOAT)
     tempPidIgain = hal.newsig('%s-temp-pid-Igain' % name, hal.HAL_FLOAT)
@@ -175,30 +181,36 @@ def create_temperature_control(name, section, thread, hardwareOkSignal=None,
     noErrorIn = hal.newsig('%s-no-error-in' % name, hal.HAL_BIT)
     errorIn = hal.newsig('%s-error-in' % name, hal.HAL_BIT)
 
-    # PID
-    pid = rt.newinst('pid', 'pid.%s' % name)
-    hal.addf('%s.do-pid-calcs' % pid.name, thread)
-    pid.pin('enable').link('emcmot-0-enable')  # motor enable
-    pid.pin('feedback').link(tempMeas)
-    pid.pin('command').link(tempSet)
-    pid.pin('output').link(tempPidOut)
-    pid.pin('maxoutput').link(tempPwmMax)
-    pid.pin('bias').link(tempPidBias)
-    pid.pin('Pgain').link(tempPidPgain)
-    pid.pin('Igain').link(tempPidIgain)
-    pid.pin('Dgain').link(tempPidDgain)
-    pid.pin('maxerrorI').link(tempPidMaxerrorI)
+    sum2 = rt.newinst('sum2', 'sum2.%s-temp-range-pos' % name)
+    hal.addf(sum2.name, thread)
+    sum2.pin('in0').link(tempSet)
+    sum2.pin('in1').set(c.find(section, 'TEMP_RANGE_POS_ERROR'))
+    sum2.pin('out').link(tempRangeMax)
 
-    # init parameter signals
-    tempLimitMin.set(c.find(section, 'TEMP_LIMIT_MIN'))
-    tempLimitMax.set(c.find(section, 'TEMP_LIMIT_MAX'))
-    tempStandby.set(c.find(section, 'TEMP_STANDBY'))
-    tempPwmMax.set(c.find(section, 'PWM_MAX'))
-    tempPidPgain.set(c.find(section, 'PID_PGAIN'))
-    tempPidIgain.set(c.find(section, 'PID_IGAIN'))
-    tempPidDgain.set(c.find(section, 'PID_DGAIN'))
-    tempPidMaxerrorI.set(c.find(section, 'PID_MAXERRORI'))
-    tempPidBias.set(c.find(section, 'PID_BIAS'))
+    sum2 = rt.newinst('sum2', 'sum2.%s-temp-range-neg' % name)
+    hal.addf(sum2.name, thread)
+    sum2.pin('in0').link(tempSet)
+    sum2.pin('in1').set(c.find(section, 'TEMP_RANGE_NEG_ERROR'))
+    sum2.pin('out').link(tempRangeMin)
+
+    #the output of this component will say if measured temperature is in range of set value
+    wcomp = rt.newinst('wcomp', 'wcomp.%s-temp-in-range' % name)
+    hal.addf(wcomp.name, thread)
+    wcomp.pin('min').link(tempRangeMin)
+    wcomp.pin('max').link(tempRangeMax)
+    wcomp.pin('in').link(tempMeas)
+    wcomp.pin('out').link(tempInRange)
+
+    # limit the output temperature to prevent damage when thermistor is broken/removed
+    wcomp = rt.newinst('wcomp', 'wcomp.%s-temp-in-limit' % name)
+    hal.addf(wcomp.name, thread)
+    wcomp.pin('min').link(tempLimitMin)
+    wcomp.pin('max').link(tempLimitMax)
+    wcomp.pin('in').link(tempMeas)
+    wcomp.pin('out').link(tempInLimit)
+
+    rcomps.create_temperature_rcomp(name)
+    motion.setup_temperature_io(name)
 
 
 def setup_estop(errorSignals, thread):
@@ -225,13 +237,13 @@ def setup_estop(errorSignals, thread):
     estopLatch.pin('ok-out').link(estopOut)
 
 
-    hal.Pin('iocontrol.0.user-request-enable').link(estopTest)
-    #estopTest.link('iocontrol.0.user-enable-out')
+    estopReset.link('iocontrol.0.user-request-enable')
+    estopUser.link('iocontrol.0.user-enable-out')
 
 
     # Monitor estop input from hardware
     estopIn.link('iocontrol.0.emc-enable-in')
-
+#    hal.net('iocontrol.0.user-enable-out', 'iocontrol.0.emc-enable-in')
 
 def setup_estop_loopback():
     # create signal for estop loopback
@@ -240,3 +252,7 @@ def setup_estop_loopback():
 def setup_tool_loopback():
     hal.net('iocontrol.0.tool-prepare', 'iocontrol.0.tool-prepared')
     hal.net('iocontrol.0.tool-change', 'iocontrol.0.tool-changed')
+
+def setup_delta():
+    assign_param("lineardeltakins","R","295.4")
+    assign_param("lineardeltakins","L","654")
