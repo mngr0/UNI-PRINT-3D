@@ -4,7 +4,9 @@ from machinekit import config as c
 
 from fdm.config import base
 
-
+def assign_param(name,signal,val):
+    import subprocess
+    subprocess.call("halcmd setp %s.%s %s"%(name,signal,str(val)), shell=True )
 def hardware_read():
     hal.addf('stepgen.capture-position', 'servo-thread')
     hal.addf('motion-command-handler', 'servo-thread')
@@ -42,16 +44,19 @@ def setup_hardware(thread):
     pinout={
         "step":{ "X":"03",
                  "Y":"05",
-                 "Z":"07"
+                 "Z":"07",
+                 "A":"09"
         },
 
         "dir":{ "X":"02",
                 "Y":"04",
-                "Z":"06"
+                "Z":"06",
+                "A":"08"
         },
         "home":{"X":"10",
                 "Y":"11",
-                "Z":"12"
+                "Z":"12",
+
         }
     }
     for i,a in enumerate(["X","Y","Z"]):
@@ -59,8 +64,7 @@ def setup_hardware(thread):
         fbSignal = hal.newsig('%spos-fb' % a, hal.HAL_FLOAT)
         stepSignal = hal.newsig('%sstep' % a, hal.HAL_BIT)
         dirSignal = hal.newsig('%sdir' % a, hal.HAL_BIT)
-        homeRawSignal = hal.newsig("%shome_raw"%a, hal.HAL_BIT)
-        homeNotRawSignal = hal.newsig("%shome_raw_not"%a, hal.HAL_BIT)
+
         checkSignal = hal.newsig("%sswitch_check"%a, hal.HAL_BIT)
         #enSignal = hal.newsig('%senable' % a, hal.HAL_BIT)
         hal.Pin('stepgen.%s.position-cmd' % str(i)).link(posSignal)
@@ -72,6 +76,8 @@ def setup_hardware(thread):
         hal.Pin("stepgen.%s.position-fb"%str(i)).link(fbSignal)
         hal.Pin("axis.%s.motor-pos-fb"%str(i)).link(fbSignal)
 
+        homeRawSignal = hal.newsig("%shome_raw"%a, hal.HAL_BIT)
+        homeNotRawSignal = hal.newsig("%shome_raw_not"%a, hal.HAL_BIT)
         hal.Pin("parport.0.pin-%s-in-not" % pinout["home"][a]).link(homeRawSignal)
         hal.Pin("debounce.%s.in"%str(i)).link(homeRawSignal)
         hal.Pin("debounce.%s.out"%str(i)).link(hal.Signal("limit-%s-home"%str(i)))
@@ -80,6 +86,30 @@ def setup_hardware(thread):
         hal.Pin("debounce.%s.in"%str(i+3)).link(homeNotRawSignal)
         hal.Pin("debounce.%s.out"%str(i+3)).link(checkSignal)
         hal.Pin("switches-check.in%s"%str(i)).link(checkSignal)
+
+
+
+
+    i,a = 3, "A"
+    # posSignal = hal.newsig('%spos-cmd' % a, hal.HAL_FLOAT)
+    fbSignal = hal.newsig('%spos-fb' % a, hal.HAL_FLOAT)
+    stepSignal = hal.newsig('%sstep' % a, hal.HAL_BIT)
+    dirSignal = hal.newsig('%sdir' % a, hal.HAL_BIT)
+
+    # checkSignal = hal.newsig("%sswitch_check"%a, hal.HAL_BIT)
+    # #enSignal = hal.newsig('%senable' % a, hal.HAL_BIT)
+    # hal.Pin('stepgen.%s.position-cmd' % str(i)).link(posSignal)
+    # hal.Pin('axis.%s.motor-pos-cmd' % str(i)).link(posSignal)
+    hal.Pin('parport.0.pin-%s-out' % pinout["step"][a]).link(stepSignal)
+    hal.Pin('parport.0.pin-%s-out' % pinout["dir"][a]).link(dirSignal)
+    hal.Pin("stepgen.%s.dir"%str(i)).link(dirSignal)
+    hal.Pin("stepgen.%s.step"%str(i)).link(stepSignal)
+    hal.Pin("stepgen.%s.position-fb"%str(i)).link(fbSignal)
+    hal.Pin("axis.%s.motor-pos-fb"%str(i)).link(fbSignal)
+    assign_param("parport.0","pin-08-out-invert",1)
+    ##### END A AXES
+
+
     switchOut = hal.newsig("switches-out",hal.HAL_BIT)
     hal.Pin("switches-check.out").link(switchOut)
     hal.Pin("pause-home.in0").link(switchOut)
