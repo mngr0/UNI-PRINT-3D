@@ -105,7 +105,7 @@ def setup_hardware(thread):
     hal.Pin("stepgen.%s.dir"%str(i)).link(dirSignal)
     hal.Pin("stepgen.%s.step"%str(i)).link(stepSignal)
     hal.Pin("stepgen.%s.position-fb"%str(i)).link(fbSignal)
-    hal.Pin("axis.%s.motor-pos-fb"%str(i)).link(fbSignal)
+    #hal.Pin("axis.%s.motor-pos-fb"%str(i)).link(fbSignal)
     assign_param("parport.0","pin-08-out-invert",1)
     ##### END A AXES
 

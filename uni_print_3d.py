@@ -60,7 +60,22 @@ base.setup_stepper(section='AXIS_2', axisIndex=2, stepgenIndex=2, stepgenType="s
 
 #base.setup_stepper(section='AXIS_3', axisIndex=3, stepgenIndex=3, stepgenType="stepgen")
 
-base.setup_stepper(section='EXTRUDER_0', axisIndex=3, stepgenIndex=3, velocitySignal='ve-extrude-vel', stepgenType="stepgen")
+#base.setup_stepper(section='EXTRUDER_0', axisIndex=3, stepgenIndex=3, velocitySignal='ve-extrude-vel', stepgenType="stepgen")
+
+
+def assign_param(name,signal,val):
+  import subprocess
+  subprocess.call("halcmd setp %s.%s %s"%(name,signal,str(val)), shell=True )
+
+sigBase='stepgen.3'
+assign_param(sigBase,"position-scale",c.find("ABP", 'SCALE'))
+assign_param(sigBase,"maxaccel",c.find("ABP", 'STEPGEN_MAXACC'))
+hal.net('ve-extrude-vel','stepgen.3.velocity-cmd')
+hal.net('emcmot-2-enable','stepgen.3.enable')
+
+
+
+
 
 # Setup Hardware
 hardware.setup_hardware(thread='servo-thread')
