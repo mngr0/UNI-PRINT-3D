@@ -19,6 +19,8 @@ try:
     launcher.ensure_mklauncher()
     # launcher.load_bbio_file('paralell_cape3.bbio')
     launcher.start_process("configserver -n MendelMax ~/Machineface")
+    if os.path.exists('/dev/video0'):  # automatically start videoserver
+        launcher.start_process('videoserver -i video.ini Webcam1')
     launcher.start_process('linuxcnc UNI-PRINT-3D.ini')
     while True:
         launcher.check_processes()

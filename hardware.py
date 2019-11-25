@@ -120,8 +120,8 @@ def setup_hardware(thread):
     hal.Pin('parport.0.pin-01-out').link(enableSignal)
     # link emcmot.xx.enable to stepper driver enable signals
 
-    motionOn = hal.newsig("is-running",hal.HAL_BIT)
-    hal.Pin("halui.program.is-running").link(motionOn)
+    motionOn = hal.Signal("is-running",hal.HAL_BIT)
+    # hal.Pin("halui.program.is-running").link(motionOn)
     hal.Pin("pause-home.in1").link(motionOn)
 
     doPause = hal.newsig("do-pause",hal.HAL_BIT)

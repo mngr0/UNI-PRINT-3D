@@ -71,8 +71,9 @@ sigBase='stepgen.3'
 assign_param(sigBase,"position-scale",c.find("ABP", 'SCALE'))
 assign_param(sigBase,"maxaccel",c.find("ABP", 'STEPGEN_MAXACC'))
 hal.net('ve-extrude-vel','stepgen.3.velocity-cmd')
-hal.net('emcmot-2-enable','stepgen.3.enable')
-
+stepgen3en = hal.newsig('is-running',hal.HAL_BIT)
+stepgen3en.link('halui.program.is-running')
+stepgen3en.link('stepgen.3.enable')
 
 
 
