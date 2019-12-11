@@ -12,7 +12,7 @@ def create_temperature_rcomp(name, timer=100):
     comp.newpin('temp.limit.max', hal.HAL_FLOAT, hal.HAL_IN)
     comp.newpin('temp.in-range', hal.HAL_BIT, hal.HAL_IN)
     comp.newpin('error', hal.HAL_BIT, hal.HAL_IN)
-    comp.newpin('active', hal.HAL_BIT, hal.IO)
+    comp.newpin('active', hal.HAL_BIT, hal.HAL_IO)
     comp.ready()
 
     comp.pin('temp.meas').link('%s-temp-meas' % name)
