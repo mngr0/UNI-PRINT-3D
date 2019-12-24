@@ -46,7 +46,7 @@ numLights = 0 #c.find('FDM', 'NUM_LIGHTS')
 withAbp = 1 #c.find('FDM', 'ABP', False)
 
 # Axis-of-motion Specific Configs (not the GUI)
-ve.velocity_extrusion(extruders=numExtruders, thread='servo-thread')
+#ve.velocity_extrusion(extruders=numExtruders, thread='servo-thread')
 # X [0] Axis
 base.setup_stepper(section='AXIS_0', axisIndex=0, stepgenIndex=0, stepgenType="stepgen")
 # Y [1] Axis
@@ -58,7 +58,7 @@ base.setup_stepper(section='AXIS_2', axisIndex=2, stepgenIndex=2, stepgenType="s
 #            gantry=True, gantryJoint=1)
 # Extruder, velocity controlled
 
-#base.setup_stepper(section='AXIS_3', axisIndex=3, stepgenIndex=3, stepgenType="stepgen")
+base.setup_stepper(section='AXIS_3', axisIndex=3, stepgenIndex=3, stepgenType="stepgen")
 
 #base.setup_stepper(section='EXTRUDER_0', axisIndex=3, stepgenIndex=3, velocitySignal='ve-extrude-vel', stepgenType="stepgen")
 
@@ -67,13 +67,13 @@ def assign_param(name,signal,val):
   import subprocess
   subprocess.call("halcmd setp %s.%s %s"%(name,signal,str(val)), shell=True )
 
-sigBase='stepgen.3'
-assign_param(sigBase,"position-scale",c.find("ABP", 'SCALE'))
-assign_param(sigBase,"maxaccel",c.find("ABP", 'STEPGEN_MAXACC'))
-hal.net('ve-extrude-vel','stepgen.3.velocity-cmd')
-stepgen3en = hal.newsig('is-running',hal.HAL_BIT)
-stepgen3en.link('halui.program.is-running')
-stepgen3en.link('stepgen.3.enable')
+#sigBase='stepgen.3'
+#assign_param(sigBase,"position-scale",c.find("ABP", 'SCALE'))
+#assign_param(sigBase,"maxaccel",c.find("ABP", 'STEPGEN_MAXACC'))
+#hal.net('ve-extrude-vel','stepgen.3.velocity-cmd')
+#stepgen3en = hal.newsig('is-running',hal.HAL_BIT)
+#stepgen3en.link('halui.program.is-running')
+#stepgen3en.link('stepgen.3.enable')
 
 
 

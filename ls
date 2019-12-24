@@ -146,7 +146,7 @@ def setup_tclab():
     #import hal_tclab
     # from hal_tclab import prepare
     # prepare()
-    hal.loadusr("hal_tclab",name="hal_tclab",wait_name="hal_tclab",wait_timeout=30)
+    hal.loadusr("hal_tclab",name="hal_tclab",wait_name="hal_tclab",wait_timeout=15)
     hal.Pin("hal_tclab.enable").link(hal.Signal("ALLenable"))
 
 

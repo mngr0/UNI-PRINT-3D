@@ -91,21 +91,35 @@ def setup_hardware(thread):
 
 
     i,a = 3, "A"
-    # posSignal = hal.newsig('%spos-cmd' % a, hal.HAL_FLOAT)
+    #only if not VE
+     posSignal = hal.newsig('%spos-cmd' % a, hal.HAL_FLOAT)
+    
+    
     fbSignal = hal.newsig('%spos-fb' % a, hal.HAL_FLOAT)
     stepSignal = hal.newsig('%sstep' % a, hal.HAL_BIT)
     dirSignal = hal.newsig('%sdir' % a, hal.HAL_BIT)
 
     # checkSignal = hal.newsig("%sswitch_check"%a, hal.HAL_BIT)
     # #enSignal = hal.newsig('%senable' % a, hal.HAL_BIT)
-    # hal.Pin('stepgen.%s.position-cmd' % str(i)).link(posSignal)
-    # hal.Pin('axis.%s.motor-pos-cmd' % str(i)).link(posSignal)
+    
+    
+    
+    #only if not VE
+    hal.Pin('stepgen.%s.position-cmd' % str(i)).link(posSignal)
+    hal.Pin('axis.%s.motor-pos-cmd' % str(i)).link(posSignal)
+    
+    
+    
     hal.Pin('parport.0.pin-%s-out' % pinout["step"][a]).link(stepSignal)
     hal.Pin('parport.0.pin-%s-out' % pinout["dir"][a]).link(dirSignal)
     hal.Pin("stepgen.%s.dir"%str(i)).link(dirSignal)
     hal.Pin("stepgen.%s.step"%str(i)).link(stepSignal)
     hal.Pin("stepgen.%s.position-fb"%str(i)).link(fbSignal)
-    #hal.Pin("axis.%s.motor-pos-fb"%str(i)).link(fbSignal)
+
+    #only if not VE
+    hal.Pin("axis.%s.motor-pos-fb"%str(i)).link(fbSignal)
+    
+    
     assign_param("parport.0","pin-08-out-invert",1)
     ##### END A AXES
 
