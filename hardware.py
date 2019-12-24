@@ -26,7 +26,7 @@ def init_hardware():
 
     # load low-level drivers
     rt.loadrt('hal_parport', cfg='0x0378')
-    rt.loadrt('stepgen', step_type='0,0,0,0',ctrl_type="p,p,p,v")
+    rt.loadrt('stepgen', step_type='0,0,0,0',ctrl_type="p,p,p,p")
     deb = rt.newinst('debounce', 'debounce')
     # witches-check=
     rt.newinst("orn","switches-check", pincount="4")
@@ -92,7 +92,7 @@ def setup_hardware(thread):
 
     i,a = 3, "A"
     #only if not VE
-     posSignal = hal.newsig('%spos-cmd' % a, hal.HAL_FLOAT)
+    posSignal = hal.newsig('%spos-cmd' % a, hal.HAL_FLOAT)
     
     
     fbSignal = hal.newsig('%spos-fb' % a, hal.HAL_FLOAT)
