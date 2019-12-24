@@ -157,6 +157,7 @@ def create_temperature_control(name, section, thread, hardwareOkSignal=None,
     tempSet = hal.newsig('%s-temp-set' % name, hal.HAL_FLOAT)
     tempMeas = hal.newsig('%s-temp-meas' % name, hal.HAL_FLOAT)
     tempInRange = hal.newsig('%s-temp-in-range' % name, hal.HAL_BIT)
+    tempInRangePre = hal.newsig('%s-temp-in-range-pre-check' % name, hal.HAL_BIT)
     active = hal.newsig('%s-active' % name, hal.HAL_BIT)
     tempLimitMin = hal.newsig('%s-temp-limit-min' % name, hal.HAL_FLOAT)
     tempLimitMax = hal.newsig('%s-temp-limit-max' % name, hal.HAL_FLOAT)
@@ -202,7 +203,25 @@ def create_temperature_control(name, section, thread, hardwareOkSignal=None,
     wcomp.pin('min').link(tempRangeMin)
     wcomp.pin('max').link(tempRangeMax)
     wcomp.pin('in').link(tempMeas)
-    wcomp.pin('out').link(tempInRange)
+    wcomp.pin('out').link(tempInRangePre)
+
+
+
+    notActive = hal.newsig('%s-not-active' % name, hal.HAL_BIT)
+    activeNot = rt.newinst('not','not.%s.active-not'%name)
+    hal.addf(activeNot.name, thread)
+    activeNot.pin('in').link(active)
+    activeNot.pin('out').link(notActive)
+
+
+    or2 = rt.newinst('orn', 'or2.%s-check-temp-in-range'%name, pincount='2')
+    hal.addf(or2.name, thread)
+    or2.pin('in1').link(tempInRangePre)
+
+    or2.pin('in0').link(notActive)
+    or2.pin('out').link(tempInRange)
+
+
 
     # limit the output temperature to prevent damage when thermistor is broken/removed
     wcomp = rt.newinst('wcomp', 'wcomp.%s-temp-in-limit' % name)
