@@ -118,4 +118,6 @@ storage.read_storage()
 print("fine")
 # start haltalk server after everything is initialized
 # else binding the remote components on the UI might fail
+hal.loadusr('xhc-whb04b-6',H="-pu")
+
 hal.loadusr('haltalk', wait=True)
