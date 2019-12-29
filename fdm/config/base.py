@@ -165,7 +165,7 @@ def create_temperature_control(name, section, thread, hardwareOkSignal=None,
     hal.Pin("hal_tclab.temperature-%s"%str(tclab_index)).link(tempMeas)
     hal.Pin("hal_tclab.setpoint-%s"%str(tclab_index)).link(tempSet)
     hal.Pin("hal_tclab.enable-%s"%str(tclab_index)).link(active)
-
+    active.set(1)
     tempInLimit = hal.newsig('%s-temp-in-limit' % name, hal.HAL_BIT)
     tempThermOk = hal.newsig('%s-temp-therm-ok' % name, hal.HAL_BIT)
     error = hal.newsig('%s-error' % name, hal.HAL_BIT)
