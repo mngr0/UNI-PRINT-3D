@@ -1,0 +1,22 @@
+
+loadrt ilowpass names=ilowpass.jog.x,ilowpass.jog.y,ilowpass.jog.z,ilowpass.jog.a
+setp   ilowpass.jog.x.scale 1
+setp   ilowpass.jog.y.scale 1 
+setp   ilowpass.jog.z.scale 1
+setp   ilowpass.jog.a.scale 1
+setp   ilowpass.jog.x.gain  0.01
+setp   ilowpass.jog.y.gain  0.01
+setp   ilowpass.jog.z.gain  0.01
+setp   ilowpass.jog.a.gain  0.01
+
+
+loadrt scale names=scale.axis.x,scale.axis.y,scale.axis.z,scale.axis.a
+setp   scale.axis.x.gain    0.01
+setp   scale.axis.y.gain    0.01
+setp   scale.axis.z.gain    0.01
+setp   scale.axis.a.gain    0.01
+setp   scale.axis.x.offset  0
+setp   scale.axis.y.offset  0
+setp   scale.axis.z.offset  0
+setp   scale.axis.a.offset  0
+

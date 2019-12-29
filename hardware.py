@@ -21,17 +21,26 @@ def hardware_write():
     hal.addf('parport.0.write','base-thread') #must be base-thread
     hal.addf('switches-check.funct',"servo-thread")
     hal.addf('pause-home.funct',"servo-thread")
+    hal.addf('ilowpass.jog.x','servo-thread')
+    hal.addf('ilowpass.jog.y','servo-thread')
+    hal.addf('ilowpass.jog.z','servo-thread')
+    hal.addf('ilowpass.jog.a','servo-thread')
+
+
+
 def init_hardware():
     watchList = []
 
     # load low-level drivers
     rt.loadrt('hal_parport', cfg='0x0378')
     rt.loadrt('stepgen', step_type='0,0,0,0',ctrl_type="p,p,p,p")
+    #rt.loadrt("ilowpass", names="ilowpass.jog.x")
     deb = rt.newinst('debounce', 'debounce')
     # witches-check=
     rt.newinst("orn","switches-check", pincount="4")
     # pause-check=
     rt.newinst("andn","pause-home", pincount="2")
+
 
 def setup_hardware(thread):
     # Stepper
