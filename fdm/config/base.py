@@ -80,8 +80,8 @@ def setup_stepper(stepgenIndex, section, axisIndex=None,
     # expose timing parameters so we can multiplex them later
     sigBase = 'stepgen.%i' % stepgenIndex
 
-    assign_param(sigBase,"position-scale",c.find("ABP", 'SCALE'))
-    assign_param(sigBase,"maxaccel",c.find("ABP", 'STEPGEN_MAXACC'))
+    assign_param(sigBase,"position-scale",c.find(section, 'SCALE'))
+    assign_param(sigBase,"maxaccel",c.find(section, 'STEPGEN_MAXACC'))
     #assign_param(sigBase,"maxvel",c.find("ABP", 'STEPGEN_MAXVEL'))
 
     # position command and feedback

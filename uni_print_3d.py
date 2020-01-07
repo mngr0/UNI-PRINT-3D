@@ -118,6 +118,9 @@ storage.read_storage()
 print("fine")
 # start haltalk server after everything is initialized
 # else binding the remote components on the UI might fail
+
+
+"""
 hal.loadusr('xhc-whb04b-6', H="-pu", wait_name="xhc-whb04b-6", wait_timeout=30)
 
 
@@ -126,13 +129,6 @@ print("loaded")
 axes_list = ["x","y","z","a"]
 
 
-
-
-"""
-    net  pdnt.machine.is-on                  halui.machine.is-on                whb.halui.machine.is-on
-    net  pdnt.machine.on                     whb.halui.machine.on               halui.machine.on
-    net  pdnt.machine.off                    whb.halui.machine.off              halui.machine.off
-"""
 sign = hal.newsig("pdnt-machine-is-on",hal.HAL_BIT)
 hal.Pin("whb.halui.machine.is-on").link(sign)
 hal.Pin("halui.machine.is-on").link(sign)
@@ -159,20 +155,20 @@ for index, axes in enumerate(axes_list):
     sig3 = hal.newsig("pdnt-ilowpass-joint-%s-jog-count"%axes,hal.HAL_S32)
     hal.Pin("whb.axis.%s.jog-counts"%str(index)).link(sig3)
     hal.Pin("ilowpass.jog.%s.in"%axes).link(sig3)
-   
+
     sig4 = hal.newsig("pdnt-joint-%s-jog-enable"%axes,hal.HAL_BIT)
     hal.Pin("whb.axis.%s.jog-enable"%str(index)).link(sig4)
     hal.Pin("axis.%s.jog-enable"%str(index)).link(sig4)
-    
+
     sig5 = hal.newsig("pdnt-joint-%s-pos-feedback"%axes,hal.HAL_FLOAT)
     hal.Pin("whb.halui.axis.%s.pos-feedback"%str(index)).link(sig5)
     hal.Pin("halui.axis.%s.pos-feedback"%str(index)).link(sig5)
-    
+
     sig6 = hal.newsig("pdnt-joint-%s-jog-count"%axes,hal.HAL_S32)
     hal.Pin("ilowpass.jog.%s.out"%axes).link(sig6)
     hal.Pin("axis.%s.jog-counts"%str(index)).link(sig6)
 
-
+"""
 
 #hpg.stepgen.00.maxvel              whb.stepgen.00.maxvel
 
