@@ -7,6 +7,7 @@ from fdm.config import base
 def assign_param(name,signal,val):
     import subprocess
     subprocess.call("halcmd setp %s.%s %s"%(name,signal,str(val)), shell=True )
+
 def hardware_read():
     hal.addf('stepgen.capture-position', 'servo-thread')
     hal.addf('motion-command-handler', 'servo-thread')
@@ -25,7 +26,7 @@ def hardware_write():
     hal.addf('ilowpass.jog.y','servo-thread')
     hal.addf('ilowpass.jog.z','servo-thread')
     hal.addf('ilowpass.jog.a','servo-thread')
-
+    hal.addf('edge.funct','servo-thread')
 
 
 def init_hardware():
@@ -40,6 +41,7 @@ def init_hardware():
     rt.newinst("orn","switches-check", pincount="4")
     # pause-check=
     rt.newinst("andn","pause-home", pincount="2")
+    rt.newinst("edge","edge")
 
 
 def setup_hardware(thread):
@@ -150,6 +152,11 @@ def setup_hardware(thread):
     doPause = hal.newsig("do-pause",hal.HAL_BIT)
     hal.Pin("pause-home.out").link(doPause)
     hal.Pin("halui.program.pause").link(doPause)
+
+    bot_pause_check = hal.newsig("bot-pause-check",hal.HAL_BIT)
+    hal.Pin("edge.in").link(doPause)
+    hal.Pin("edge.out").link(bot_pause_check)
+    assign_param("edge.N","out-width-ns",500000000)
 
 def setup_hbp_led(thread):
     pass
